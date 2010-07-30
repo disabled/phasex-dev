@@ -5,6 +5,7 @@
  * PHASEX:  [P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
  *
  * Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+ *               2010 Anton Kormakov <assault64@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -47,6 +48,7 @@
 #include "bank.h"
 #include "settings.h"
 #include "help.h"
+#include "lash.h"
 
 
 /* command line options */
@@ -482,7 +484,8 @@ main(int argc, char **argv) {
 	case 'h':	/* help */
 	default:
 	    showusage (argv[0]);
-	    return -1;
+	    //return -1;
+	    break;
 	}
     }
 
@@ -505,17 +508,17 @@ main(int argc, char **argv) {
     }
 
     /* steal space from first environment entry */
-    if (envp[0] != NULL) {
-	argvend = envp[0] + strlen (envp[0]);
-    }
+    //if (envp[0] != NULL) {
+	//argvend = envp[0] + strlen (envp[0]);
+    //}
 
     /* calculate size we have for process title */
-    argsize = (char *)argvend - (char *)*argvals - 1;
-    memset (*argvals, 0, argsize);
+    //argsize = (char *)argvend - (char *)*argvals - 1;
+    //memset (*argvals, 0, argsize);
 
     /* rewrite process title */
-    argc = 0;
-    snprintf ((char *)*argvals, argsize, "phasex-%02d", phasex_instance);
+    //argc = 0;
+    //snprintf ((char *)*argvals, argsize, "phasex-%02d", phasex_instance);
 
     /* build the lookup tables */
     build_freq_table ();
@@ -674,7 +677,17 @@ main(int argc, char **argv) {
 	phasex_shutdown ("Unable to start initial JACK client.  Shutting Down.");
     }
 
-    /* sit here and restart jack client */
+    /* init lash client */
+    if (lash_clinit(argc, argv, client, midi->seq) == 0)
+    {
+    if (debug) {
+        fprintf (stderr, "Main: LASH client started.\n");
+    }
+    }
+    else
+        fprintf (stderr, "Unable to start lash client.\n");
+
+    /* sit here and restart jack client & poll lash client for events */
     jack_watchdog ();
 
     /* wait for threads to terminate */

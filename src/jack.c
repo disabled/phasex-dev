@@ -5,6 +5,7 @@
  * PHASEX:  [P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
  *
  * Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+ *               2010 Anton Kormakov <assault64@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,7 +34,7 @@
 #include "engine.h"
 #include "settings.h"
 #include "gtkui.h"
-
+#include "lash.h"
 
 jack_client_t			*client;
 
@@ -671,6 +672,9 @@ jack_watchdog(void) {
 	    pthread_join (gtkui_thread_p, NULL);
 	    start_gtkui_thread ();
 	}
+
+    /* poll lash for events */
+    lash_pollevent();
 
 	/* everybody sleeps */
 	usleep (250000);

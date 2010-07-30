@@ -18,7 +18,8 @@ phasex_SOURCES = \
 	bank.c bank.h \
 	settings.c settings.h \
 	help.c help.h \
-	gtkknob.c gtkknob.h
+	gtkknob.c gtkknob.h \
+	lash.c lash.h
 
 AM_CFLAGS   = @PHASEX_CFLAGS@
 AM_CPPFLAGS = $(EXTRA_CPPFLAGS) @PHASEX_CPPFLAGS@
