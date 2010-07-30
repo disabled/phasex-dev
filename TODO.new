@@ -1,0 +1,26 @@
+[P]hase [H]armonic [A]dvanced [S]ynthesis [EX]permient
+
+
+Primary TODO LIST:
+
+* Add LASH/LADI support. -- partially done
+
+* Add mouseover hints to show that param labels are clickable.
+
+* Implement Hermite interpolation for under/over-sampling.
+
+* Add support for user loaded oscillator samples.
+
+* Add JACK MIDI support.
+
+* Add support for JACK transport time/tempo/timesig sync.
+
+* Modularize portamento, keytrigger, and clock sync implementations
+  in midi.c so they can be used elsewhere.
+  
+* Add detune parameters for LFOs.
+
+* Fix MIDI clock tick sync algorithm.  Currently uses a simple decayed
+  average for jitter correction.  Implement clock sync for LFOs.
+  
+* Add sustain pedal support.
