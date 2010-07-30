@@ -1,0 +1,103 @@
+[P]hase [H]armonic [A]dvanced [S]ynthesis [EX]permient
+
+
+TODO LIST:
+
+* Finish renaming internal variables to match parameter names visible
+  to the user.
+
+* Mono multichannel mode.  Optionally map oscillators to different
+  MIDI channels.
+
+* Print useful comments in patch output, like the real values that
+  correspond to the MIDI cc values.
+
+* Fix MIDI clock tick sync algorithm.  Currently uses a simple decayed
+  average for jitter correction.  Implement clock sync for LFOs.
+
+* Implement handling of MIDI song position pointer messages for LFO
+  resync.
+
+* Optimize DSP algorithms.  Minimize temp vars.  Reorder operations to
+  encourage compiler to make better use of registers.  Implement an
+  inexpensive interpolation algorithm to greatly reduce table size.
+
+* Enable re-routing of JACK and ALSA sequencer connections in GUI.
+
+* Create an improved ComboKnob widget that consists of a knob, an
+  editable MIDI cc value w/ up & down arrows, and a non-editable
+  display value in real units (like note value, freq in hz, dB, etc.)
+
+* Create nice looking radio button boxes (with pixmaps) for selecting
+  waveshapes, modulation sources, and some of the other parameters
+  currently using ComboBoxes and RadioButtons.
+
+* Allow the filter to be per-voice or per-part, with on-the-fly
+  switching.
+
+* Add detune parameters for LFOs.
+
+* Make parameters even more uniform (with generic code to handle
+  conversions to real units used internally in engine).
+
+* Rewrite patch parser after the new parameter framework is
+  standardized.
+
+* Add a modulation matrix once handling of all parameters is
+  standardized.
+
+* Add pan flipping option to alternate pan between new notes.
+
+* Implement generic parameter smoothing.
+
+* Add DSSI/OSC/LV2 and LADSPA support.
+
+* Create a programmable arpeggiator.
+
+* Add standard menus and menuitems where applicable.
+
+* Add JACK MIDI support.
+
+* Find a faster way than lookup tables for wave generation, that
+  still works with current engine algorithms.
+
+* Trim down init_parameters(), make sure everything necessary is in
+  the callback functions, and rename to init_engine().  Ideally,
+  this should just run through the parameter callbacks.
+
+* Protect patch updates from GUI with mutex/condition locking.
+
+* Modularize portamento, keytrigger, and clock sync implementations
+  in midi.c so they can be used elsewhere.
+
+* Trim down patch struct to just the MIDI controller values and
+  corresponding int/float values.  Move everything else into the
+  part struct.
+
+* Add support for JACK transport time/tempo/timesig sync.
+
+* Fine tune input follower a little better.
+
+* Add option to play filter cutoff frequencies as MIDI notes on
+  another MIDI channel.
+
+* Add support for user loaded oscillator samples.
+
+* Add support for full length sample playback.
+
+* Add LASH/LADI support.
+
+* Add support for modwheel and generic high-res controllers.
+
+* Implement Hermite interpolation for under/over-sampling.
+
+* Fix on-the-fly settings change for sample rate mode.
+
+* Add mouseover hints to show that param labels are clickable.
+
+* Add ALSA audio support.
+
+* Add multitimbral support (multiple parts on independent MIDI
+  channels).
+
+* Add BPM controller offset to the preferences.

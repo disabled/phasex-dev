@@ -1,0 +1,34 @@
+------------------------------------------------------------------------
+[P]hase [H]armonic [A]dvanced [S]ynthesis [E]xperiment
+------------------------------------------------------------------------
+
+
+Author / Maintainer:
+------------------------------------------------------------------------
+
+William Weston <weston@sysex.net>
+
+* All code, documentation patches, and samples, execpt as noted below
+  in the contributors section.  Copyright (C) 1999-2009
+
+
+Contributors:
+------------------------------------------------------------------------
+
+Tony Garnock-Jones
+
+* Original gtkknob code, Copyright (C) 1999
+
+Sean Bolton
+
+* Contributions to the gtkknob code, Copyright (C) 2004
+
+Peter Shorthose <zenadsl6252@zen.co.uk>
+
+* Abstraction of the pixmap animation in gtkknob.c, allowing animations
+  to be loaded into memory once per unique instance, Copyright (C) 2007
+
+* Backing store support for widgets on X11 displays, Copyright (C) 2007
+
+
+------------------------------------------------------------------------

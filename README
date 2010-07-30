@@ -1,0 +1,264 @@
+
+PHASEX-0.12.0:
+
+-------------------------------------------------------------------------------
+[P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
+-------------------------------------------------------------------------------
+
+Welcome to the latest incarnation of PHASEX!
+
+What is PHASEX?  It's a software synthesizer designed to incorporate
+some experimental features not found in many other synths (like phase
+offset modulation) along with a good implementation of a lot of the
+features seen on most modern synthesizers.
+
+-------------------------------------------------------------------------------
+
+
+
+FEATURES:
+-------------------------------------------------------------------------------
+
+* GTK Interface:
+    
+    PHASEX has a GUI, complete with knobs and buttons for all 145
+    patch parameters and switchable color themes.  True fullscreen
+    mode, notebook and one-page layouts, and selectable fonts allow
+    PHASEX to fit into any amount of screen real-estate comfortably
+    (now able to fit in sizes smaller than 800x600).
+
+* Polyphonic:
+
+    PHASEX is polyphonic.  In poly mode, voices are allocated
+    dynamically up to the voice limit set at compile time.
+    Oscillators and filters function independently per-voice.  LFOs,
+    however, function on a per-part basis.  In addition to Poly mode,
+    the three legacy Mono modes are still supported: Mono Smooth mode
+    puts new notes back into sustain if playing legato.  Mono Multikey
+    mode maps the keys played, in order, round-robin style to all
+    oscillators based on MIDI note frequencies in use.  In Mono
+    Retrigger mode, envelopes and oscillator init phases are
+    retriggered every time a note is played.
+
+* JACK Output:
+
+    JACK is used for the audio output.  PHASEX supports any sample
+    rate or buffer size used by jackd.  Future plans include
+    supporting the JACK sequencer for MIDI input.  If there's enough
+    interest, support for other audio systems such as ALSA (w/o JACK)
+    or portaudio may be added as well.
+
+* ALSA MIDI Control:
+
+    PHASEX receives its MIDI input via standard ALSA sequencer ports
+    for full realtime control over any parameter.  Parameter names are
+    right clickable for quick and easy MIDI controller assignments.
+    Each MIDI controller can be mapped to up to 15 parameters.  PHASEX
+    now supports velocity sensitivity and key aftertouch.
+
+* Multithreaded:
+
+    PHASEX uses separate threads using realtime scheduling for JACK
+    output, MIDI input, and the synth engine.  The GTK UI runs in its
+    own thread at normal scheduling priority.
+
+* Oscillators:
+
+    Each oscillator features wave shape selection (including sampled
+    and generated waveforms), bipolar or unipolar output, frequency
+    source selection (midi note, tempo based, tempo based w/ phase
+    trigger, audio input, or velocity/aftertouch), mix modulation
+    supporting standard or AM mixing, per-osc transpose and
+    pitchbender amounts, and selectable modulation sources for AM, FM,
+    phase offset, and waveshape modulation.  For all but waveshape
+    modulation, both oscillators and LFOs are available as modulation
+    sources.
+
+* LFOs:
+
+    The dedicated per-osc LFOs have been replaced with generic
+    per-part LFOs.  The LFOs are identical to the oscillators with the
+    following exceptions:  They are per-part instead of per-voice,
+    they do not accept other modulation sources (yet), they are not
+    transposed by the master transpose parameter, and when sourced to
+    velocity, aftertouch data is ignored.
+
+* ADSR Envelope:
+
+    PHASEX comes equipped with standard ADSR envelopes for the
+    amplifier and filter.  Duration times follow a parabolic curve.
+    The amplitude of the amplifier envelope follows a logarathmic
+    curve.  The filter envelope is linear with respect to the musical
+    scale.  Both can also be used as oscillator and LFO sources.
+
+* Filter:
+
+    The filter is a Chamberlin filter (2-pole 12db/octave) hacked up
+    so it doesn't destasblize at high cutoff or resonance values.  Low
+    pass, high pass, band pass, and band stop modes are available, as
+    well as four combo modes.  The filter has it's own ADSR envelope
+    (identical to amplifier envelope with the added option of
+    switching to negative polarity).  One of the LFOs may be mapped to
+    modulate filter cutoff.  Cutoff controller values map directly to
+    MIDI note numbers.  Optional keyfollow mode allows cutoff to
+    follow the key played for the MIDI note, or the lowest, highest,
+    or most recent key in play.  The filter is per-voice in Poly mode.
+
+* Chorus:
+
+    The PHASEX stereo crossover chorus (inspired by the chorus on the
+    old Akai S-series samplers) adds depth and that extra bit of
+    fullness, and comes with a builtin phaser for an expansive stereo
+    soundstage.
+
+* Delay:
+
+    The delay sports the normal mix and feedback controls, along with
+    a channel crossover option.  A dedicated LFO allows modulation of
+    playback position, great for flange-like effects (or really
+    messing with people's heads at longer delay times).  Delay times
+    are selectable based on tempo, in both 1/64th and 1/48th
+    increments.
+
+* Input Processing:
+
+    Up to two JACK input channels (as mono, dual mono, or stereo) may
+    be used as frequency sources for both oscillators and LFOs.  An
+    input envelope follower and input boost allow for sources like
+    guitar or vocals to be processed with ease.
+
+* Stereo Width:
+
+    The width of the stereo image is adjustable via a MIDI controller
+    from pure mono to pure stereo.  Can be used during sound design to
+    help create patches that sound very different when a center
+    playback channel is present.
+
+
+
+COMPILING AND INSTALLING PHASEX:
+-------------------------------------------------------------------------------
+
+For most installations, all that should be needed is the following:
+
+	cd phasex-0.12.0
+	./configure --enable-arch=native
+	make
+	make install
+
+Other useful configure flags are --enable-debug=, --enable-32bit,
+and --enable-cpu-power=.
+
+See INSTALL for full compilation and installation instrucitons.
+
+-------------------------------------------------------------------------------
+
+
+
+RUNNING PHASEX:
+-------------------------------------------------------------------------------
+
+usage:  phasex [options] [<patch-name>|<program-number>|<patch-file>]
+options:
+  -f, --fullscreen    Start in fullscreen mode.
+  -M, --maximize      Start with main window maximized.
+  -b, --bpm=          Override BPM from patch bank and lock BPM parameter.
+  -t, --tuning=       Base tuning frequency for A4 (defualt 440 Hz).
+  -m, --midi-channel= Global MIDI channel (default 'omni').
+  -i, --input=        Comma separated pair of JACK input substring matches.
+  -o, --output=       Comma separated pair of JACK output substring matches.
+  -p, --port=         Set ALSA MIDI port(s) to connect from.
+  -O, --oversample    Use double the sample rate for internal math.
+  -U, --undersample   Use half the sample rate for internal math.
+  -d, --debug         More noise on the console.
+  -v, --version       Output version and exit.
+  -h, --help          Output usage information and exit.
+
+PHASEX requires JACK, so make sure jackd is running (and configured
+for your system) and run phasex.  If you use software like qjackctl to
+handle your audio and MIDI patchbay, then the command line options
+aren't necessary.  The -i and -o options accept comma separated
+substring pairs to match on JACK audio port names.  The -p option
+takes a comma separated list of alsa port numbers.
+
+For example:
+
+	phasex -i _1,_2 -o _1,_2 -p 16:0,20:0
+
+will match alsa_pcm:capture_1 and alsa_pcm:capture_2 for input,
+alsa_pcm:playback_1 and alsa_pcm:playback_2 for output, and the first
+two hardware MIDI input ports with relatively recent versions of JACK
+and ALSA.  (Older ALSA builds might need 64:0,80:0.)
+
+To view a full technical description of any parameter, simply
+middle-click on the parameter label.  Similarly, a right-click on any
+parameter label allows on-the-fly mapping of any MIDI controller to
+any parameter (up to 15 parameters may be mapped to a single MIDI
+controller).  All remaining features are directly visible and
+accessible through the GUI and its (very short) menus.
+
+Patch bank storage works like it does on just about any modern
+hardware synth, with one exception: Patches themselves are stored by
+name, not by program number, in the patch bank.  The individual
+program slots in the patch bank simply reference the stored patches by
+name.  In Autosave mode, a patch is automatically saved before a new
+patch is loaded during a program change without any user intervention.
+Autosave mode is intended for use during sound design sessions.  In
+Warn mode, warnings will be issued will be issued when unsaved
+modifications to the patch will be lost.  In Protect mode, program
+changes always take effect immediately, so any patch modifications are
+quietly discarded and patches never get (re)saved unless they are
+saved explicitly.
+
+-------------------------------------------------------------------------------
+
+
+
+LICENSING:
+-------------------------------------------------------------------------------
+
+PHASEX is distributed under the terms of the GNU Public License,
+version 2.  See LICENSE for details.
+
+Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+and others.  See AUTHORS for details.
+
+-------------------------------------------------------------------------------
+
+
+
+OBTAINING PHASEX:
+-------------------------------------------------------------------------------
+
+Visit the PHASEX website at http://sysex.net/phasex/ to download the
+latest version.
+
+Or alternatively grab the very latest (usually working) code with git:
+
+	git clone http://sysex.net/git/phasex.git
+
+-------------------------------------------------------------------------------
+
+
+
+CONTACTING THE AUTHOR:
+-------------------------------------------------------------------------------
+
+The primary goal of the PHASEX project is to offer a free software
+synthesizer for GNU/Linux/ALSA/JACK systems that is useful in a MIDI
+production environment.  Please send any kind of feedback you will for
+PHASEX.
+
+What do you like about it?
+What don't you like about it?
+What features do you think are missing?
+What would you do differently?
+What are you looking for in a UI?
+
+Anything you say can only influence me to make PHASEX better.
+
+Kind Regards,
+
+--William Weston <weston@sysex.net>
+
+-------------------------------------------------------------------------------

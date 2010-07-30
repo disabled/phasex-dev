@@ -1,0 +1,14 @@
+# Theme engine definition for PHASEX
+
+# If libnodoka.so is not found, this file will be skipped over
+# so that GTK doesn't complain.
+
+style "sysex-engine-default"
+{
+	engine "nodoka"
+	{
+		bullet_color	= "#00f000"
+	}
+}
+
+class "GtkWidget" style "sysex-engine-default"

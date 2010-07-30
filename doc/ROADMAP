@@ -1,0 +1,28 @@
+[P]hase [H]armonic [A]dvanced [S]ynthesis [E]xperiment
+
+Project Roadmap:
+
+------------------------------------------------------------------------
+
+*0.12.x	Focus on stability and useability.  Bugfixes and small features.
+
+0.13.x	LASH/LADI support.  Multitimbral support.
+
+*0.14.x	JACK MIDI support.
+
+0.15.x	OSC/DSSI/LV2 support.
+
+*0.16.x	Implement LFO clock-sync for MIDI clock and JACK transport.
+
+0.17.x	?????
+
+*0.18.x	Overhaul params, add generic ctlr conversions and mod-matrix.
+
+0.19.x	Programmable arpeggiator?
+
+*0.20.x	GUI enhancements.
+
+
+* Stable release branch
+
+------------------------------------------------------------------------
