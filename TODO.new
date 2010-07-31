@@ -26,3 +26,5 @@ Primary TODO LIST:
 * Add sustain pedal support. -- done
 
 * Fix behavoir of NOTE_OFF in attack
+
+* Fix native GTK theme -- done

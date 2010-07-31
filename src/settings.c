@@ -880,8 +880,11 @@ set_theme_env(void) {
 	theme_selection = GTKRC_LIGHT;
 	break;
     case PHASEX_THEME_DARK:
-    default:
 	theme_selection = GTKRC_DARK;
+	break;
+	case PHASEX_THEME_SYSTEM:
+	default:
+	theme_selection = NULL;
 	break;
     }
 
