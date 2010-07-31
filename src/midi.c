@@ -5,6 +5,7 @@
  * PHASEX:  [P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
  *
  * Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+ *               2010 Anton Kormakov <assault64@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -626,6 +627,10 @@ midi_thread(void *arg) {
 		    case SND_SEQ_EVENT_CONTROLLER:
 			/* get controller number */
 			cc = ev->data.control.param % 128;
+
+            /* TODO: integrate pedal into params matrix */
+            if (cc == 64)
+                hold_pedal = (ev->data.control.value > 64) ? 1 : 0;
 
 			/* now walk through the params in the matrix */
 			j = 0;

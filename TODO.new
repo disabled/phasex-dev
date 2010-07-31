@@ -23,4 +23,6 @@ Primary TODO LIST:
 * Fix MIDI clock tick sync algorithm.  Currently uses a simple decayed
   average for jitter correction.  Implement clock sync for LFOs.
   
-* Add sustain pedal support.
+* Add sustain pedal support. -- done
+
+* Fix behavoir of NOTE_OFF in attack

@@ -5,6 +5,7 @@
  * PHASEX:  [P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
  *
  * Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+ *               2010 Anton Kormakov <assault64@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,6 +38,7 @@
 VOICE		voice[MAX_VOICES];
 PART		part;
 GLOBAL		global;
+int         hold_pedal = 0;
 
 pthread_mutex_t	engine_ready_mutex;
 pthread_cond_t	engine_ready_cond	= PTHREAD_COND_INITIALIZER;
@@ -370,7 +372,8 @@ engine_thread(void *arg) {
 	    if (voice[v].cur_amp_sample < -1) {
 
 		/* deal with envelope if not in key sustain */
-		if ((voice[v].cur_amp_interval != ENV_INTERVAL_SUSTAIN) || (voice[v].keypressed == -1)) {
+		if (((voice[v].cur_amp_interval != ENV_INTERVAL_SUSTAIN) || (voice[v].keypressed == -1)) 
+		    && (!hold_pedal || voice[v].cur_amp_interval == ENV_INTERVAL_ATTACK)) {
 
 		    /* move on to the next envelope interval */
 		    if (voice[v].cur_amp_interval < ENV_INTERVAL_DONE) {
