@@ -388,7 +388,7 @@ engine_thread(void *arg) {
 			case ENV_INTERVAL_RELEASE:
 			    voice[v].amp_env_dur[ENV_INTERVAL_RELEASE]   = env_table[patch->amp_release];
 			    voice[v].amp_env_delta[ENV_INTERVAL_RELEASE] =
-				(0.0 - patch->amp_sustain) / (sample_t)voice[v].amp_env_dur[ENV_INTERVAL_RELEASE];
+				(0.0 - voice[v].amp_env_raw) / (sample_t)voice[v].amp_env_dur[ENV_INTERVAL_RELEASE];
 			    break;
 			}
 		    }
@@ -422,6 +422,12 @@ engine_thread(void *arg) {
 		else if (voice[v].amp_env_raw > 1.0) {
 		    voice[v].amp_env_raw = 1.0;
 		}
+		/* switch to release interval on NOTE_OFF when pedal is not held */
+		if((voice[v].keypressed == -1) && (voice[v].cur_amp_interval < ENV_INTERVAL_SUSTAIN) && !hold_pedal)
+		{
+		    voice[v].cur_amp_sample = -2; 
+		    voice[v].cur_amp_interval = ENV_INTERVAL_SUSTAIN;
+		} 
 	    }
 
 	    /* now do the exact same thing for filter envelope */
@@ -443,7 +449,7 @@ engine_thread(void *arg) {
 			case ENV_INTERVAL_RELEASE:
 			    voice[v].filter_env_dur[ENV_INTERVAL_RELEASE]   = env_table[patch->filter_release];
 			    voice[v].filter_env_delta[ENV_INTERVAL_RELEASE] =
-				(0.0 - patch->filter_sustain) / (sample_t)voice[v].filter_env_dur[ENV_INTERVAL_RELEASE];
+				(0.0 - voice[v].filter_env_raw) / (sample_t)voice[v].filter_env_dur[ENV_INTERVAL_RELEASE];
 			    break;
 			}
 		    }
@@ -468,6 +474,11 @@ engine_thread(void *arg) {
 		}
 		else if (voice[v].filter_env_raw > 1.0) {
 		    voice[v].filter_env_raw = 1.0;
+		}
+		if((voice[v].keypressed == -1) && (voice[v].cur_filter_interval < ENV_INTERVAL_SUSTAIN) && !hold_pedal)
+		{
+		    voice[v].cur_filter_sample = -2; 
+		    voice[v].cur_filter_interval = ENV_INTERVAL_SUSTAIN;
 		}
 	    }
 
