@@ -373,7 +373,7 @@ engine_thread(void *arg) {
 
 		/* deal with envelope if not in key sustain */
 		if (((voice[v].cur_amp_interval != ENV_INTERVAL_SUSTAIN) || (voice[v].keypressed == -1)) 
-		    && (!hold_pedal || voice[v].cur_amp_interval == ENV_INTERVAL_ATTACK)) {
+		    && (!hold_pedal || (voice[v].cur_amp_interval == ENV_INTERVAL_ATTACK))) {
 
 		    /* move on to the next envelope interval */
 		    if (voice[v].cur_amp_interval < ENV_INTERVAL_DONE) {
@@ -434,7 +434,8 @@ engine_thread(void *arg) {
 	    if (voice[v].cur_filter_sample < 0) {
 
 		/* deal with envelope if not in key sustain (or moving out of sustain) */
-		if ((voice[v].cur_filter_interval != ENV_INTERVAL_SUSTAIN) || (voice[v].keypressed == -1)) {
+		if (((voice[v].cur_filter_interval != ENV_INTERVAL_SUSTAIN) || (voice[v].keypressed == -1)) 
+		    && (!hold_pedal || (voice[v].cur_amp_interval == ENV_INTERVAL_ATTACK))) {
 
 		    /* move on to the next envelope interval */
 		    if (voice[v].cur_filter_interval < ENV_INTERVAL_DONE) {
