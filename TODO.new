@@ -25,6 +25,12 @@ Primary TODO LIST:
   
 * Add sustain pedal support. -- done
 
-* Fix behavoir of NOTE_OFF in attack
+* Fix behavior of NOTE_OFF in attack -- i _believe_ it's done
 
 * Fix native GTK theme -- done
+
+* Add 'Panic' button -- done. needs testing
+
+* Fix behavior of polyphony limit -- done. needs testing
+
+* Fix ADSR calculation (output signal level somehow strangely depends on decay)
