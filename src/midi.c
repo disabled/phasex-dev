@@ -364,13 +364,13 @@ midi_thread(void *arg) {
 				    }
 				    else {
 					/* priority 2: look for the same note, keeping track of oldest */
-//					if (voice[j].midi_key == part.midi_key) {
-//					    same_key = j;
-//					    if (voice[j].age > same_key_oldest_age) {
-//						same_key_oldest_age = voice[j].age;
-//						steal_voice = j;
-//					    }
-//					}
+					if (voice[j].midi_key == part.midi_key) {
+					    same_key = j;
+					    if (voice[j].age > same_key_oldest_age) {
+						same_key_oldest_age = voice[j].age;
+						steal_voice = j;
+					    }
+					}
 					/* priority 3: find the absolute oldest in play */
 					if ((same_key == -1) && (voice[j].age > oldest_age)) {
 					    oldest_age = voice[j].age;
@@ -383,11 +383,13 @@ midi_thread(void *arg) {
 				if (free_voice >= 0) {
 				    v = free_voice;
 				}
-//				else if (same_key >= 0) {
-//				    v = same_key;
-//				}
+				else if (same_key >= 0) {
+				    v = same_key;
+				    voice[v].age = 0;
+				}
 				else {
 				    v = steal_voice;
+				    voice[v].age = 0;
 				}
 
 				break;
