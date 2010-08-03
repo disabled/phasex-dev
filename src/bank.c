@@ -1031,6 +1031,17 @@ create_bank_group(GtkWidget *main_window, GtkWidget *parent_table,
     g_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (save_program),
 		      (gpointer)program_entry);
+		      
+    event = gtk_event_box_new ();
+    widget_set_backing_store (event);
+    button = gtk_button_new_with_label ("Panic!");
+    widget_set_backing_store (button);
+    gtk_container_add (GTK_CONTAINER (event), button);
+    gtk_box_pack_start (GTK_BOX (box), event, FALSE, FALSE, 1);
+
+    g_signal_connect (GTK_OBJECT (button), "clicked",
+		      GTK_SIGNAL_FUNC (engine_panic),
+		      NULL);
 
     /* "Modified" label */
     if (show_modified) {
