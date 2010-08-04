@@ -408,7 +408,7 @@ midi_thread(void *arg) {
 				velocity_gain_table[patch->amp_velocity_cc][part.velocity];
 
 			    /* staccato, or no previous notes in play */
-			    if (part.prev_key == -1) {
+			    if (part.prev_key == -1 || !part.head) {
 
 				/* put this key at the start of the list */
 				part.head = &part.keylist[part.midi_key];
@@ -539,7 +539,10 @@ midi_thread(void *arg) {
 			    //part.prev_key	= part.midi_key;
 			    voice[v].midi_key   = -1;
 			    voice[v].keypressed = -1;
-			    part.midi_key       = -1;
+			    
+			    if(!hold_pedal)
+			        part.midi_key       = -1;
+
 			    part.head           = NULL;
 			    keytrigger          = 0;
 			}
@@ -632,8 +635,12 @@ midi_thread(void *arg) {
 
             /* TODO: integrate pedal into params matrix */
             if (cc == 64)
+            {
                 hold_pedal = (ev->data.control.value > 64) ? 1 : 0;
-
+                if(!(hold_pedal || part.head))
+                    part.midi_key = -1;
+            }
+			
 			/* now walk through the params in the matrix */
 			j = 0;
 			while (((id = ccmatrix[cc][j]) >= 0) && (j < 16)) {
