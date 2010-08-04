@@ -1331,6 +1331,14 @@ engine_panic(void)
 		voice[j].cur_filter_sample = -2; 
 		voice[j].cur_filter_interval = ENV_INTERVAL_DONE;
     }
+    memset (part.delay_buf, 0, part.delay_bufsize * 2 * sizeof (sample_t));
+	part.chorus_bufsize = CHORUS_MAX;
+    #ifdef INTERPOLATE_CHORUS
+	memset (part.chorus_buf_1, 0, part.chorus_bufsize * sizeof (sample_t));
+	memset (part.chorus_buf_2, 0, part.chorus_bufsize * sizeof (sample_t));
+    #else
+	memset (part.chorus_buf, 0, part.chorus_bufsize * 2 * sizeof (sample_t));
+    #endif
 	part.midi_key = -1;
 	part.head = NULL;
     hold_pedal = 0;
