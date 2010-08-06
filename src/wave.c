@@ -179,7 +179,7 @@ build_env_tables(void) {
 
     /* envelope duration table */
     for (j = 0; j < 128; j++) {
-	env_table[j] = ((j + 0) * (j + 0) * (sample_rate / 6000)) + 2;
+	env_table[j] = ((j + 0) * (j + 0) * (sample_rate / 6000)) + (sample_rate / 2000);
     }
 
     /* envelope logarithmic volume curve */

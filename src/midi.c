@@ -769,10 +769,19 @@ midi_thread(void *arg) {
 			    voice[v].cur_filter_sample = voice[v].filter_env_dur[ENV_INTERVAL_ATTACK]
 				                       = env_table[patch->filter_attack];
 
-			    voice[v].amp_env_delta[ENV_INTERVAL_ATTACK]    =
-				(1.0 - voice[v].amp_env_raw)    / (sample_t)voice[v].amp_env_dur[ENV_INTERVAL_ATTACK];
-			    voice[v].filter_env_delta[ENV_INTERVAL_ATTACK] =
-				(1.0 - voice[v].filter_env_raw) / (sample_t)voice[v].filter_env_dur[ENV_INTERVAL_ATTACK];
+                if(patch->amp_attack || patch->amp_decay)
+			        voice[v].amp_env_delta[ENV_INTERVAL_ATTACK]    =
+				    (1.0 - voice[v].amp_env_raw)    / (sample_t)voice[v].amp_env_dur[ENV_INTERVAL_ATTACK];
+				else
+				    voice[v].amp_env_delta[ENV_INTERVAL_ATTACK]    =
+				    (patch->amp_sustain - voice[v].amp_env_raw)    / (sample_t)voice[v].amp_env_dur[ENV_INTERVAL_ATTACK];
+				
+				if(patch->filter_attack || patch->filter_decay)
+			        voice[v].filter_env_delta[ENV_INTERVAL_ATTACK] =
+				    (1.0 - voice[v].filter_env_raw) / (sample_t)voice[v].filter_env_dur[ENV_INTERVAL_ATTACK];
+				else
+				    voice[v].filter_env_delta[ENV_INTERVAL_ATTACK] =
+				    (patch->filter_sustain - voice[v].filter_env_raw) / (sample_t)voice[v].filter_env_dur[ENV_INTERVAL_ATTACK];
 
 			    /* init phase for keytrig oscs */
 			    for (osc = 0; osc < NUM_OSCS; osc++) {

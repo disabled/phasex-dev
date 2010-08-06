@@ -212,7 +212,11 @@ init_parameters(void) {
 
 	/* generate the size in samples and value deltas for our envelope intervals */
 	voice[j].amp_env_dur[ENV_INTERVAL_ATTACK]    = env_table[patch->amp_attack];
-	voice[j].amp_env_delta[ENV_INTERVAL_ATTACK]  = 1.0 / (sample_t)voice[j].amp_env_dur[ENV_INTERVAL_ATTACK];
+	if(patch->amp_attack || patch->amp_decay)
+	    voice[j].amp_env_delta[ENV_INTERVAL_ATTACK]  = 1.0 / (sample_t)voice[j].amp_env_dur[ENV_INTERVAL_ATTACK];
+	else
+	    voice[j].amp_env_delta[ENV_INTERVAL_ATTACK]  = patch->amp_sustain / (sample_t)voice[j].amp_env_dur[ENV_INTERVAL_ATTACK];
+
 	voice[j].amp_env_dur[ENV_INTERVAL_DECAY]     = env_table[patch->amp_decay];
 	voice[j].amp_env_delta[ENV_INTERVAL_DECAY]   = (patch->amp_sustain - 1.0) / (sample_t)voice[j].amp_env_dur[ENV_INTERVAL_DECAY];
 	voice[j].amp_env_dur[ENV_INTERVAL_SUSTAIN]   = 1;
@@ -230,7 +234,11 @@ init_parameters(void) {
 
 	/* generate the size in samples and value deltas for our envelope intervals */
 	voice[j].filter_env_dur[ENV_INTERVAL_ATTACK]    = env_table[patch->filter_attack];
-	voice[j].filter_env_delta[ENV_INTERVAL_ATTACK]  = 1.0 / (sample_t)voice[j].filter_env_dur[ENV_INTERVAL_ATTACK];
+	if(patch->amp_attack || patch->amp_decay)
+    	voice[j].filter_env_delta[ENV_INTERVAL_ATTACK]  = 1.0 / (sample_t)voice[j].filter_env_dur[ENV_INTERVAL_ATTACK];
+	else
+	    voice[j].filter_env_delta[ENV_INTERVAL_ATTACK]  = patch->filter_sustain / (sample_t)voice[j].filter_env_dur[ENV_INTERVAL_ATTACK];
+
 	voice[j].filter_env_dur[ENV_INTERVAL_DECAY]     = env_table[patch->filter_decay];
 	voice[j].filter_env_delta[ENV_INTERVAL_DECAY]   = (patch->filter_sustain - 1.0) / (sample_t)voice[j].filter_env_dur[ENV_INTERVAL_DECAY];
 	voice[j].filter_env_dur[ENV_INTERVAL_SUSTAIN]   = 1;
@@ -369,7 +377,7 @@ engine_thread(void *arg) {
 	    voice[v].active = 1;
 
 	    /* has the end of an envelope interval been reached? */
-	    if (voice[v].cur_amp_sample < -1) {
+	    if (voice[v].cur_amp_sample < 1) {
 
 		/* deal with envelope if not in key sustain */
 		if (((voice[v].cur_amp_interval != ENV_INTERVAL_SUSTAIN) || (voice[v].keypressed == -1)) 
@@ -383,7 +391,7 @@ engine_thread(void *arg) {
 			case ENV_INTERVAL_DECAY:
 			    voice[v].amp_env_dur[ENV_INTERVAL_DECAY]   = env_table[patch->amp_decay];
 			    voice[v].amp_env_delta[ENV_INTERVAL_DECAY] =
-				(patch->amp_sustain - 1.0) / (sample_t)voice[v].amp_env_dur[ENV_INTERVAL_DECAY];
+				(patch->amp_sustain - voice[v].amp_env_raw) / (sample_t)voice[v].amp_env_dur[ENV_INTERVAL_DECAY];
 			    break;
 			case ENV_INTERVAL_RELEASE:
 			    voice[v].amp_env_dur[ENV_INTERVAL_RELEASE]   = env_table[patch->amp_release];
@@ -431,7 +439,7 @@ engine_thread(void *arg) {
 	    }
 
 	    /* now do the exact same thing for filter envelope */
-	    if (voice[v].cur_filter_sample < 0) {
+	    if (voice[v].cur_filter_sample < 1) {
 
 		/* deal with envelope if not in key sustain (or moving out of sustain) */
 		if (((voice[v].cur_filter_interval != ENV_INTERVAL_SUSTAIN) || (voice[v].keypressed == -1)) 
@@ -445,7 +453,7 @@ engine_thread(void *arg) {
 			case ENV_INTERVAL_DECAY:
 			    voice[v].filter_env_dur[ENV_INTERVAL_DECAY]   = env_table[patch->filter_decay];
 			    voice[v].filter_env_delta[ENV_INTERVAL_DECAY] =
-				(patch->filter_sustain - 1.0) / (sample_t)voice[v].filter_env_dur[ENV_INTERVAL_DECAY];
+				(patch->filter_sustain - voice[v].filter_env_raw) / (sample_t)voice[v].filter_env_dur[ENV_INTERVAL_DECAY];
 			    break;
 			case ENV_INTERVAL_RELEASE:
 			    voice[v].filter_env_dur[ENV_INTERVAL_RELEASE]   = env_table[patch->filter_release];
