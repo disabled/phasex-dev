@@ -989,16 +989,16 @@ engine_thread(void *arg) {
 
 	    /* grab values from phase offset positions within chorus delay buffer */
 	    tmp_1_a = hermite (part.chorus_buf_1, part.chorus_bufsize, part.chorus_read_index_a);
-	    tmp_1_a = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_a);
+	    tmp_2_a = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_a);
 
 	    tmp_1_b = hermite (part.chorus_buf_1, part.chorus_bufsize, part.chorus_read_index_b);
-	    tmp_1_b = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_b);
+	    tmp_2_b = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_b);
 
 	    tmp_1_c = hermite (part.chorus_buf_1, part.chorus_bufsize, part.chorus_read_index_c);
-	    tmp_1_c = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_c);
+	    tmp_2_c = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_c);
 
 	    tmp_1_d = hermite (part.chorus_buf_1, part.chorus_bufsize, part.chorus_read_index_d);
-	    tmp_1_d = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_d);
+	    tmp_2_d = hermite (part.chorus_buf_2, part.chorus_bufsize, part.chorus_read_index_d);
 #else
 	    /* chorus_buf MUST be a single stereo width buffer, not separate buffers! */
 	    /* set phase offset read indices into chorus delay buffer */
