@@ -424,13 +424,13 @@ init_params(void) {
     init_param(PARAM_CHORUS_TIME,          "chorus_time",         "Delay Time",  PARAM_TYPE_INT, 108, 127,   0,   0, 0, 12,update_chorus_time,         NULL);
     init_param(PARAM_CHORUS_PHASE_RATE,    "chorus_phase_rate",   "Phase Rate",  PARAM_TYPE_RATE, -1, 127,   0,   0, 0,  4,update_chorus_phase_rate,   rate_labels);
     init_param(PARAM_CHORUS_PHASE_BALANCE, "chorus_phase_balance","Phase Bal",   PARAM_TYPE_REAL, -1, 127,  64,   0, 0,  8,update_chorus_phase_balance,NULL);
-    init_param(PARAM_CHORUS_FEED,          "chorus_feed",         "Feedback",    PARAM_TYPE_REAL,109, 127,   0,   0, 0,  8,update_chorus_feed,         NULL);
+    init_param(PARAM_CHORUS_FEED,          "chorus_feed",         "Feedback Mix",    PARAM_TYPE_REAL,109, 127,   0,   0, 0,  8,update_chorus_feed,         NULL);
     init_param(PARAM_CHORUS_LFO_WAVE,      "chorus_lfo_wave",     "LFO Wave",    PARAM_TYPE_DTNT,110,  17,   0,   0, 0,  1,update_chorus_lfo_wave,     wave_labels);
     init_param(PARAM_CHORUS_LFO_RATE,      "chorus_lfo_rate",     "LFO Rate",    PARAM_TYPE_RATE,106, 127,   0,   0, 0,  4,update_chorus_lfo_rate,     rate_labels);
     init_param(PARAM_CHORUS_FLIP,          "chorus_flip",         "Crossover",   PARAM_TYPE_BOOL, -1,   1,   0,   0, 0,  1,update_chorus_flip,         on_off_labels);
     /*         index                        name                   label         type             cc  lim  ccv  pre ix leap callback                   labels */
     init_param(PARAM_DELAY_MIX,            "delay_mix",           "Mix",         PARAM_TYPE_REAL,113, 127,  16,   0, 0,  8,update_delay_mix,           NULL);
-    init_param(PARAM_DELAY_FEED,           "delay_feed",          "Feedback",    PARAM_TYPE_REAL,115, 127,  16,   0, 0,  8,update_delay_feed,          NULL);
+    init_param(PARAM_DELAY_FEED,           "delay_feed",          "Feedback Mix",    PARAM_TYPE_REAL,115, 127,  16,   0, 0,  8,update_delay_feed,          NULL);
     init_param(PARAM_DELAY_FLIP,           "delay_flip",          "Crossover",   PARAM_TYPE_BOOL, -1, 127,   0,   0, 0,  1,update_delay_flip,          on_off_labels);
     init_param(PARAM_DELAY_TIME,           "delay_time",          "Time",        PARAM_TYPE_RATE, 62, 111,  64,   0, 0,  4,update_delay_time,          rate_labels);
     init_param(PARAM_DELAY_LFO,            "delay_lfo",           "LFO",         PARAM_TYPE_BBOX, -1, 127,   0,   0, 0,  1,update_delay_lfo,           lfo_labels);

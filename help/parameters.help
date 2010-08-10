@@ -126,7 +126,7 @@ The depth of LFO modulation when reading from the delay line.
 The length of the chorus delay line.
 .
 
-:chorus_feed:Chorus Feedback:
+:chorus_feed:Chorus Feedback Mix:
 The delay line input/output mix ratio used at delay line input,
 ranging from all input at 0 to equal input and output at 64, and
 nearly all output at 127.
@@ -168,7 +168,7 @@ The wet/dry mix ratio, ranging from all dry at 0 to equal wet and dry
 at 64, and nearly all wet at 127.
 .
 
-:delay_feed:Delay Feedback:
+:delay_feed:Delay Feedback Mix:
 The delay line input/output mix ratio used at delay line input,
 ranging from all input at 0 to equal input and output at 64, and
 nearly all output at 127.
