@@ -44,6 +44,11 @@ pthread_mutex_t	engine_ready_mutex;
 pthread_cond_t	engine_ready_cond	= PTHREAD_COND_INITIALIZER;
 int		engine_ready		= 0;
 
+/* constant & buffers for DC blocking filter */
+float dcR_const;
+float dcR_in1 = 0, dcR_in2 = 0;
+float dcR_out1 = 0, dcR_out2 = 0;
+
 
 /*****************************************************************************
  *
@@ -349,6 +354,9 @@ engine_thread(void *arg) {
     input_env_raw     = 0.0;
     input_env_attack  = exp (log (0.01) / (12));
     input_env_release = exp (log (0.01) / (24000));
+    
+    /* (-3dB @ 20Hz) DC blocking filter */
+    dcR_const = 1.0 - (125.6 /  (float)f_sample_rate); /* 1.0 - (M_PI * 2 * freq / (float)f_sample_rate); */
 
     /* set realtime scheduling and priority */
     thread_id = pthread_self ();
@@ -1188,8 +1196,17 @@ engine_thread(void *arg) {
 	}
 
 	/* part mixing should go here when multitimbral mode is supported */
-	global.out1 = part.out1;
-	global.out2 = part.out2;
+	//global.out1 = part.out1;
+	//global.out2 = part.out2;
+	
+	/* DC blocking filtering */
+	global.out1 = part.out1 - dcR_in1 + dcR_const * dcR_out1;
+    dcR_in1 = part.out1;
+    dcR_out1 = global.out1;
+
+    global.out2 = part.out2 - dcR_in2 + dcR_const * dcR_out2;
+    dcR_in2 = part.out2;
+    dcR_out2 = global.out2;
 
 	/* debug: keep track of max output sample */
 #ifdef DEBUG_SAMPLE_VALUES
