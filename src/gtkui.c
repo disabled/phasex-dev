@@ -516,7 +516,7 @@ param_label_button_press(GtkWidget *widget, GdkEventButton *event) {
 
     case 3:
 	/* only midi-map real paramaters */
-	if (!id || (id >= NUM_PARAMS)) {
+	if (id >= NUM_PARAMS) {
 	    return;
 	}
 
