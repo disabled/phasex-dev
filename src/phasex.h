@@ -239,6 +239,7 @@ typedef float sample_t;
 /* globals from phasex.c */
 extern int debug;
 extern int phasex_instance;
+extern char *phasex_title;
 extern int shutdown;
 
 extern pthread_t jack_thread_p;

@@ -1816,7 +1816,7 @@ create_main_window(void) {
     GtkWidget			*main_vbox;
     GtkWidget			*event;
     char			knob_file[PATH_MAX];
-    char			window_title[10];
+    char			window_title[32];
 
     /* create main window */
     main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1842,7 +1842,12 @@ create_main_window(void) {
     widget_set_backing_store (main_window);
     gtk_object_set_data (GTK_OBJECT(main_window), "main_window", main_window);
     gtk_widget_set_name (main_window, "main_window");
-    snprintf (window_title, sizeof (window_title), "phasex-%02d", phasex_instance);
+    if(!phasex_instance) {
+        snprintf (window_title, sizeof (window_title), "%s", phasex_title);
+    }
+    else {
+        snprintf (window_title, sizeof (window_title), "%s-%02d", phasex_title, phasex_instance);
+    }
     gtk_window_set_title (GTK_WINDOW (main_window), window_title);
     gtk_window_set_icon_from_file (GTK_WINDOW (main_window),
 				   PIXMAP_DIR"/phasex-icon.png", NULL);

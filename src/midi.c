@@ -188,13 +188,23 @@ open_alsa_midi_in(char *alsa_port) {
     new_midi->in_port->client = snd_seq_client_id (new_midi->seq);
 
     /* set our client name */
-    snprintf (client_name, sizeof (client_name), "phasex-%02d", phasex_instance);
+    if(!phasex_instance) {
+        snprintf (client_name, sizeof (client_name), "%s", phasex_title);
+    }
+    else {
+        snprintf (client_name, sizeof (client_name), "%s-%02d", phasex_title, phasex_instance);
+    }
     if (snd_seq_set_client_name (new_midi->seq, client_name) < 0) {
 	phasex_shutdown ("Unable to set ALSA sequencer client name.\n");
     }
 
     /* create a port */
-    snprintf (port_name, sizeof (port_name), "phasex-%02d in", phasex_instance);
+    if(!phasex_instance) {
+        snprintf (port_name, sizeof (port_name), "%s in", phasex_title);
+    }
+    else {
+        snprintf (port_name, sizeof (port_name), "%s-%02d in", phasex_title, phasex_instance);
+    }
     new_midi->in_port->port =
 	snd_seq_create_simple_port (new_midi->seq, port_name,
 				    SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE,

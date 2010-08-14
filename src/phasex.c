@@ -53,7 +53,7 @@
 
 /* command line options */
 #define HAS_ARG		1
-#define NUM_OPTS	(13 + 1)
+#define NUM_OPTS	(14 + 1)
 static struct option long_opts[] = {
     {"undersample",  0,       NULL, 'U'},
     {"oversample",   0,       NULL, 'O'},
@@ -65,6 +65,7 @@ static struct option long_opts[] = {
     {"midi-channel", HAS_ARG, NULL, 'm'},
     {"fullscreen",   0,       NULL, 'f'},
     {"maximize",     0,       NULL, 'M'},
+    {"name",         HAS_ARG, NULL, 'n'},
     {"debug",        0,       NULL, 'd'},
     {"help",         0,       NULL, 'h'},
     {"version",      0,       NULL, 'v'},
@@ -74,7 +75,8 @@ static struct option long_opts[] = {
 
 int		debug           = 0;
 int		shutdown        = 0;
-int		phasex_instance = 1;
+int		phasex_instance = 0;
+char    *phasex_title   = "phasex";
 
 pthread_t	jack_thread_p   = 0;
 pthread_t	midi_thread_p   = 0;
@@ -110,6 +112,7 @@ showusage(char *argvzero) {
     printf ("    -p, --port=         set ALSA MIDI port(s) to connect from.\n");
     printf ("    -O, --oversample    use double the sample rate for internal math.\n");
     printf ("    -U, --undersample   use half the sample rate for internal math.\n");
+    printf ("    -n, --name=         set instance name (default 'phasex').\n");
     printf ("    -d, --debug         output debug messages on the console.\n");
     printf ("    -v, --version       display version and exit.\n");
     printf ("    -h, --help          display this help message and exit.\n\n");
@@ -125,6 +128,7 @@ showusage(char *argvzero) {
  * GET_INSTANCE_NUM()
  *
  *****************************************************************************/
+/*
 int
 get_instance_num(void) {
     char		buf[1024];
@@ -184,7 +188,7 @@ get_instance_num(void) {
 
     return -1;
 }
-
+*/
 
 /*****************************************************************************
  *
@@ -274,8 +278,6 @@ check_user_data_dirs(void) {
     }
 
     snprintf (user_bank_file,         PATH_MAX, "%s/%s",      user_data_dir, USER_BANK_FILE);
-    snprintf (user_patchdump_file,    PATH_MAX, "%s/%s-%02d", user_data_dir, USER_PATCHDUMP_FILE,    phasex_instance);
-    snprintf (user_midimap_dump_file, PATH_MAX, "%s/%s-%02d", user_data_dir, USER_MIDIMAP_DUMP_FILE, phasex_instance);
     snprintf (user_config_file,       PATH_MAX, "%s/%s",      user_data_dir, USER_CONFIG_FILE);
     snprintf (sys_default_patch,      PATH_MAX, "%s/%s",      PATCH_DIR,     SYS_DEFAULT_PATCH);
 }
@@ -391,10 +393,10 @@ main(int argc, char **argv) {
     mlockall (MCL_CURRENT | MCL_FUTURE);
 
     /* get instance number */
-    phasex_instance = get_instance_num();
-    if (debug) {
-	fprintf (stderr, "PHASEX Instance: %d\n", phasex_instance);
-    }
+    //phasex_instance = get_instance_num();
+    //if (debug) {
+	//fprintf (stderr, "PHASEX Instance: %d\n", phasex_instance);
+    //}
 
     /* make sure user data dirs are setup */
     check_user_data_dirs ();
@@ -477,6 +479,9 @@ main(int argc, char **argv) {
 	case 'p':	/* ALSA MIDI ports */
 	    alsa_port = strdup (optarg);
 	    break;
+	case 'n':
+	    phasex_title = strdup (optarg);
+	    break;
 	case 'v':	/* version */
 	    printf ("phasex-%s\n", PACKAGE_VERSION);
 	    return 0;
@@ -498,14 +503,14 @@ main(int argc, char **argv) {
 
     /* Figure out how much mem we have for process title. */
     /* This includes the orig contiguous mem for argv and envp. */
-    for (j = 0; j <= argcount; j++) {
-        if ((j == 0) || ((argvend + 1) == argvals[j])) {
-            argvend = argvals[j] + strlen (argvals[j]);
-	}
-        else {
-            continue;
-	}
-    }
+    //for (j = 0; j <= argcount; j++) {
+    //    if ((j == 0) || ((argvend + 1) == argvals[j])) {
+    //        argvend = argvals[j] + strlen (argvals[j]);
+	//}
+    //    else {
+    //        continue;
+	//}
+    //}
 
     /* steal space from first environment entry */
     //if (envp[0] != NULL) {
@@ -541,21 +546,13 @@ main(int argc, char **argv) {
     /* build midi controller matrix after init_params() and before midi_thread() */
     build_ccmatrix ();
 
-    /* open midi input */
-    if ((midi = open_alsa_midi_in (alsa_port)) == NULL) {
-	phasex_shutdown ("Unable to open ALSA MIDI in.\n");
-    }
-
-    /* initialize patch, voice, part, and global parameters */
-    patch = &(bank[0]);
-    init_parameters ();
-
     /* initialize realtime mutexes */
     init_rt_mutex (&buffer_mutex, 1);
     init_rt_mutex (&sample_rate_mutex, 1);
 
     /* connect to jack server, retrying for up to 15 seconds */
     for (j = 0; j < 15; j++) {
+    phasex_instance = 0;
 	if (jack_init () == 0) {
 	    break;
 	}
@@ -571,8 +568,21 @@ main(int argc, char **argv) {
     if (j == 15) {
 	phasex_shutdown ("Unable to conect to JACK server.  Is JACK running?\n");
     }
-
+    
     /* at this point, sample rate and jack buffer size are known */
+
+    /* open midi input */
+    if ((midi = open_alsa_midi_in (alsa_port)) == NULL) {
+	phasex_shutdown ("Unable to open ALSA MIDI in.\n");
+    }
+
+    /* initialize patch, voice, part, and global parameters */
+    patch = &(bank[0]);
+    init_parameters ();
+    
+    /* read default patch & midimap files for phasex instance */
+    snprintf (user_patchdump_file,    PATH_MAX, "%s/%s-%02d", user_data_dir, USER_PATCHDUMP_FILE,    phasex_instance);
+    snprintf (user_midimap_dump_file, PATH_MAX, "%s/%s-%02d", user_data_dir, USER_MIDIMAP_DUMP_FILE, phasex_instance);
 
     /* Initialize patch and bank */
     init_patch_bank ();

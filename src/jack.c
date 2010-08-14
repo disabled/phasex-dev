@@ -329,7 +329,7 @@ jack_restart(void) {
 int
 jack_init(void) {
     const char		*server_name = NULL;
-    static char		client_name[10];
+    static char		client_name[32];
     jack_options_t	options = JackNoStartServer | JackUseExactName;
     jack_status_t	status = 0;
 
@@ -346,9 +346,19 @@ jack_init(void) {
     }
 
     /* open a client connection to the JACK server */
-    snprintf (client_name, 10, "phasex-%02d", phasex_instance);
-    client = jack_client_open ((const char *)client_name, options, &status, server_name);
-
+    for( phasex_instance = 0; phasex_instance != 16; phasex_instance++)
+    {
+    if(!phasex_instance) {
+        snprintf (client_name, 32, "%s", phasex_title);
+    }
+    else {
+        snprintf (client_name, 32, "%s-%02d", phasex_title, phasex_instance);
+    }
+    printf("Using client name %s\n", client_name);
+    if (client = jack_client_open ((const char *)client_name, options, &status, server_name))
+        break;
+    }
+    
     /* deal with non-unique client name */
     if (status & JackNameNotUnique) {
 	fprintf (stderr, "Unable to start JACK client '%s'!\n", client_name);
