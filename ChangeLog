@@ -2,6 +2,21 @@
 
 Changelog:
 
+2010-08-xx Anton Kormakov <assault64@gmail.com> - Milestone 1
+    * Added LASH support.
+    * Added sustain pedal support.
+    * Fixed behavior of NOTE_OFF in attack.
+    * Fixed system GTK theme.
+    * Added 'Panic' button.
+    * Fixed behavior of polyphony limit.
+    * Fixed ADSR calculation.
+    * Fixed chorus interpolation.
+    * 'Feedback' chorus and delay setting renamed to 'Feedback Mix'
+    * Added DC blocking filter.
+    * Fixed MIDI learn for BPM parameter.
+    * Changed naming scheme of multiple instances.
+    * Added -n (--name) option to set name of PHASEX instance.
+
 2009-09-22 William Weston <weston@sysex.net> - 0.12.0
 	* Rebuilt configure.ac (now uses autoconf and automake properly).
 	* Added --enable-32bit and --enable-cpu-power= options to configure.

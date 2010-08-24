@@ -55,6 +55,11 @@ FEATURES:
     right clickable for quick and easy MIDI controller assignments.
     Each MIDI controller can be mapped to up to 15 parameters.  PHASEX
     now supports velocity sensitivity and key aftertouch.
+    
+* LASH Support:
+
+    LASH session managment system provides simple way to store, organize
+    and use PHASEX presets and MIDI maps.
 
 * Multithreaded:
 
@@ -170,6 +175,7 @@ options:
   -p, --port=         Set ALSA MIDI port(s) to connect from.
   -O, --oversample    Use double the sample rate for internal math.
   -U, --undersample   Use half the sample rate for internal math.
+  -n, --name=         Set instance name (default 'phasex').
   -d, --debug         More noise on the console.
   -v, --version       Output version and exit.
   -h, --help          Output usage information and exit.
@@ -230,6 +236,17 @@ and others.  See AUTHORS for details.
 OBTAINING PHASEX:
 -------------------------------------------------------------------------------
 
+Current version:
+
+Visit PHASEX development branch at http://github.com/disabled/phasex-dev
+or simply grab git tree with:
+
+    git clone git://github.com/disabled/phasex-dev.git
+
+-------------------------------------------------------------------------------
+
+Original version:
+
 Visit the PHASEX website at http://sysex.net/phasex/ to download the
 latest version.
 
@@ -240,8 +257,21 @@ Or alternatively grab the very latest (usually working) code with git:
 -------------------------------------------------------------------------------
 
 
+CONTACTING THE MAINTAINER:
+-------------------------------------------------------------------------------
 
-CONTACTING THE AUTHOR:
+The goal of this development branch is to make PHASEX soft synth more useful 
+for daily use by fixing bugs and adding support of essential features.
+
+I'd really appreciate feedback about bugs, regressions, missing features, etc. 
+Please feel free to contact me.
+
+-- Anton Kormakov <assault64@gmail.com>
+
+-------------------------------------------------------------------------------
+
+
+CONTACTING THE ORIGINAL AUTHOR:
 -------------------------------------------------------------------------------
 
 The primary goal of the PHASEX project is to offer a free software

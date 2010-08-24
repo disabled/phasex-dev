@@ -148,6 +148,7 @@ gtkui_thread(void *arg) {
 
     /* cleanup and shut everything else down */
     phasex_shutdown ("Thank you for using PHASEX!\n"
+             "(C) 2010 Anton Kormakov <assault64@gmail.com>\n"
 		     "(C) 1999-2009 William Weston <weston@sysex.net>\n"
 		     "Released under the GNU Public License, Ver. 2\n");
 

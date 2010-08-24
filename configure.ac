@@ -2,7 +2,7 @@ dnl --------------------------------------------------
 dnl configure.ac for the PHASEX
 dnl --------------------------------------------------
 
-AC_INIT(PHASEX, 0.12.0-pre1)
+AC_INIT(PHASEX, dev-m1)
 AM_INIT_AUTOMAKE(0.10.0)
 AC_CONFIG_FILES([Makefile src/Makefile phasex.spec])
 AM_CONFIG_HEADER(config.h)
@@ -45,7 +45,7 @@ AC_DEFINE_UNQUOTED(PARAM_HELPFILE,       ["${ac_datadir}/phasex/help/parameters.
 AC_DEFINE_UNQUOTED(PHASEX_GTK_ENGINE_RC, ["${ac_datadir}/phasex/gtkenginerc"],                       [GTKRC stub for theme engine])
 AC_DEFINE_UNQUOTED(GTKRC_DARK,           ["${ac_datadir}/themes/Phasex-Dark/gtk-2.0/gtkrc"],         [PHASEX Dark GTK Theme])
 AC_DEFINE_UNQUOTED(GTKRC_LIGHT,          ["${ac_datadir}/themes/Phasex-Light/gtk-2.0/gtkrc"],        [PHASEX Light GTK Theme])
-AC_DEFINE_UNQUOTED(PACKAGE_BUGREPORT,    ["weston@sysex.net"],                                       [Address where bug reports should be sent])
+AC_DEFINE_UNQUOTED(PACKAGE_BUGREPORT,    ["assault64@gmail.com"],                                    [Address where bug reports should be sent])
 
 
 # save original vars while autoconf looks for programs (and changes user vars...)

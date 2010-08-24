@@ -5,6 +5,7 @@
  * PHASEX:  [P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
  *
  * Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+ *               2010 Anton Kormakov <assault64@gmail.com> 
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -58,6 +59,7 @@ about_phasex_dialog(void) {
 #else
     const gchar		*authors[] = {
 	"* William Weston <weston@sysex.net>:\n    Original PHASEX code, patches, and samples.",
+	"* Anton Kormakov <assault64@gmail.com>:\n    Bugfixes, various improvments.",
 	"* Tony Garnock-Jones:\n    Original GTKKnob code.",
 	"* Sean Bolton:\n    Contributions to the GTKKnob code.",
 	"* Peter Shorthose <zenadsl6252@zen.co.uk>:\n    Contributions to GTKKnob and PHASEX GUI.",
@@ -65,6 +67,8 @@ about_phasex_dialog(void) {
     };
 #endif
     const gchar		*copyright =
+    "Copyright (C) 2010:\n"
+    "Anton Kormakov <assault64@gmail.com>\n"
 	"Copyright (C) 1999-2009:\n"
 	"William Weston <weston@sysex.net> and others";
     const gchar		*short_license =
@@ -75,7 +79,7 @@ about_phasex_dialog(void) {
 	"[P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment\n"
 	"A MIDI software synthesizer for Linux, ALSA, & JACK.";
     const gchar		*website =
-	"http://sysex.net/phasex/";
+    "http://github.com/disabled/phasex-dev";
     size_t		j = 0;
 
     /* build new dialog window if needed */

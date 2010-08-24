@@ -33,4 +33,10 @@ Primary TODO LIST:
 
 * Fix behavior of polyphony limit -- done. needs testing
 
-* Fix ADSR calculation (output signal level somehow strangely depends on decay)
+* Fix ADSR calculation (output signal level somehow strangely depends on decay) -- done
+
+* Fix chorus interpolation -- done
+
+* Add DC blocking filter -- done
+
+* Add posibility to rename jack and alsa i/o ports

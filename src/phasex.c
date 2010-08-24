@@ -116,7 +116,8 @@ showusage(char *argvzero) {
     printf ("    -d, --debug         output debug messages on the console.\n");
     printf ("    -v, --version       display version and exit.\n");
     printf ("    -h, --help          display this help message and exit.\n\n");
-    printf ("[P]hase [H]armonic [A]dvanced [S]ynthesis [EX]permient v%s\n", PACKAGE_VERSION);
+    printf ("[P]hase [H]armonic [A]dvanced [S]ynthesis [EX]permient %s\n", PACKAGE_VERSION);
+    printf ("        (C) 2010 Anton Kormakov <assault64@gmail.com>\n");
     printf ("        (C) 1999-2009 William Weston <weston@sysex.net> and others.\n");
     printf ("Distributed under the terms of the GNU GENERAL Public License, Version 2.\n");
     printf ("                (see AUTHORS and LICENSE for details)\n");

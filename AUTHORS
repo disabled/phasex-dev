@@ -3,13 +3,29 @@
 ------------------------------------------------------------------------
 
 
-Author / Maintainer:
+Author:
 ------------------------------------------------------------------------
 
 William Weston <weston@sysex.net>
 
-* All code, documentation patches, and samples, execpt as noted below
-  in the contributors section.  Copyright (C) 1999-2009
+* All code, documentation patches, and samples, execpt as noted below. 
+  Copyright (C) 1999-2009
+
+
+Maintainer:
+------------------------------------------------------------------------
+
+Anton Kormakov <assault64@gmail.com>
+
+* ADSR, polyphony, chorus, GTK fixes
+
+* LASH support
+
+* Sustain pedal support
+
+* 'Panic' button
+
+* DC blocking filter
 
 
 Contributors:

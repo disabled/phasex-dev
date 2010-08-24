@@ -1,6 +1,26 @@
 [P]hase [H]armonic [A]dvanced [S]ynthesis [E]xperiment
 
-Project Roadmap:
+Development Branch Roadmap:
+
+------------------------------------------------------------------------
+
+*Milestone 1: Bugfixes, LASH support.
+
+Milestone 2: More bugfixes. Better engine loop and JACK thread sync. 
+    LFO, delay and chorus clock-sync.
+
+Milestone 3: JACK MIDI support. (?) jack-session support/LADISH support
+
+*Milestone 4: Various stability fixes.
+
+*Milestone 5: Branch freeze. (?) New branch for futher development.
+
+
+* Milestone considered to be pretty stable
+
+------------------------------------------------------------------------
+
+Original Project Roadmap:
 
 ------------------------------------------------------------------------
 
