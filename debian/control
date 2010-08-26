@@ -1,0 +1,17 @@
+Source: phasex
+Section: sound
+Priority: extra
+Maintainer: Anton Kormakov <assault64@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, libgtk2.0-dev, libasound2-dev, libjack-dev, libsamplerate0-dev, liblash-dev
+Standards-Version: 3.8.4
+Homepage: http://disabled.github.com/phasex-dev
+
+Package: phasex
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: experimental software synthesizer
+ PHASEX is an experimental software synthesizer for use with
+ Linux/ALSA/JACK. The name comes partially from its experimental
+ method of using phase offset modulation, where each oscillator
+ can have its phase offset between right and left channels modulated
+ by an LFO or another oscillator. 

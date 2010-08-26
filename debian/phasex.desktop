@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=PHASEX
+Comment=Phase Harmonic Advanced Synthesis EXperiment
+Icon=phasex-icon
+Exec=phasex
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;

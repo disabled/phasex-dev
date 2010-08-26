@@ -1,0 +1,17 @@
+phasex (dev-m1-1) unstable; urgency=low
+
+    * Added LASH support.
+    * Added sustain pedal support.
+    * Fixed behavior of NOTE_OFF in attack.
+    * Fixed system GTK theme.
+    * Added 'Panic' button.
+    * Fixed behavior of polyphony limit.
+    * Fixed ADSR calculation.
+    * Fixed chorus interpolation.
+    * 'Feedback' chorus and delay setting renamed to 'Feedback Mix'
+    * Added DC blocking filter.
+    * Fixed MIDI learn for BPM parameter.
+    * Changed naming scheme of multiple instances.
+    * Added -n (--name) option to set name of PHASEX instance.
+    
+ -- Anton Kormakov <assault64@gmail.com>  Fri, 27 Aug 2010 09:01:12 +0600

@@ -79,7 +79,7 @@ about_phasex_dialog(void) {
 	"[P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment\n"
 	"A MIDI software synthesizer for Linux, ALSA, & JACK.";
     const gchar		*website =
-    "http://github.com/disabled/phasex-dev";
+    "http://disabled.github.com/phasex-dev";
     size_t		j = 0;
 
     /* build new dialog window if needed */

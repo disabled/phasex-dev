@@ -2,7 +2,7 @@
 
 Changelog:
 
-2010-08-xx Anton Kormakov <assault64@gmail.com> - Milestone 1
+2010-08-27 Anton Kormakov <assault64@gmail.com> - Milestone 1
     * Added LASH support.
     * Added sustain pedal support.
     * Fixed behavior of NOTE_OFF in attack.
