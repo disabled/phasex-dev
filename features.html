@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <title>
+            PHASEX Development Branch
+        </title
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <div id="wrap">
+        <div id="header"
+            <h1>PHASEX Development Branch</h1>
+        </div>
+        <div id="navigation">|
+            <a href="index.html">Home</a> |
+            <a href="features.html"><b>Features</b></a> |
+            <a href="changelog.html">Changelog</a> |
+            <a href="http://github.com/disabled/phasex-dev/downloads">Downloads</a> |
+            <a href="http://github.com/disabled/phasex-dev/issues">Bugtracker</a> |
+            <a href="mailto:assault64@gmail.com">Contact</a> |
+        </div>
+        <div id="mainarea">
+        <div id="description">
+        <p><b>GTK Interface</b></p>
+    
+    PHASEX has a GUI, complete with knobs and buttons for all 145
+    patch parameters and switchable color themes.  True fullscreen
+    mode, notebook and one-page layouts, and selectable fonts allow
+    PHASEX to fit into any amount of screen real-estate comfortably
+    (now able to fit in sizes smaller than 800x600).
+<br />
+<p><b>Polyphonic</b></p>
+
+    PHASEX is polyphonic.  In poly mode, voices are allocated
+    dynamically up to the voice limit set at compile time.
+    Oscillators and filters function independently per-voice.  LFOs,
+    however, function on a per-part basis.  In addition to Poly mode,
+    the three legacy Mono modes are still supported: Mono Smooth mode
+    puts new notes back into sustain if playing legato.  Mono Multikey
+    mode maps the keys played, in order, round-robin style to all
+    oscillators based on MIDI note frequencies in use.  In Mono
+    Retrigger mode, envelopes and oscillator init phases are
+    retriggered every time a note is played.
+<br />
+<p><b>JACK Output</b></p>
+
+    JACK is used for the audio output.  PHASEX supports any sample
+    rate or buffer size used by jackd.  Future plans include
+    supporting the JACK sequencer for MIDI input.  If there's enough
+    interest, support for other audio systems such as ALSA (w/o JACK)
+    or portaudio may be added as well.
+<br />
+<p><b>ALSA MIDI Control</b></p>
+
+    PHASEX receives its MIDI input via standard ALSA sequencer ports
+    for full realtime control over any parameter.  Parameter names are
+    right clickable for quick and easy MIDI controller assignments.
+    Each MIDI controller can be mapped to up to 15 parameters.  PHASEX
+    now supports velocity sensitivity and key aftertouch.
+    <br />
+<p><b>LASH Support</b></p>
+
+    LASH session managment system provides simple way to store, organize
+    and use PHASEX presets and MIDI maps.
+<br />
+<p><b>Multithreaded</b></p>
+
+    PHASEX uses separate threads using realtime scheduling for JACK
+    output, MIDI input, and the synth engine.  The GTK UI runs in its
+    own thread at normal scheduling priority.
+<br />
+<p><b>Oscillators</b></p>
+
+    Each oscillator features wave shape selection (including sampled
+    and generated waveforms), bipolar or unipolar output, frequency
+    source selection (midi note, tempo based, tempo based w/ phase
+    trigger, audio input, or velocity/aftertouch), mix modulation
+    supporting standard or AM mixing, per-osc transpose and
+    pitchbender amounts, and selectable modulation sources for AM, FM,
+    phase offset, and waveshape modulation.  For all but waveshape
+    modulation, both oscillators and LFOs are available as modulation
+    sources.
+<br />
+<p><b>LFOs</b></p>
+
+    The dedicated per-osc LFOs have been replaced with generic
+    per-part LFOs.  The LFOs are identical to the oscillators with the
+    following exceptions:  They are per-part instead of per-voice,
+    they do not accept other modulation sources (yet), they are not
+    transposed by the master transpose parameter, and when sourced to
+    velocity, aftertouch data is ignored.
+<br />
+<p><b>ADSR Envelope</b></p>
+
+    PHASEX comes equipped with standard ADSR envelopes for the
+    amplifier and filter.  Duration times follow a parabolic curve.
+    The amplitude of the amplifier envelope follows a logarathmic
+    curve.  The filter envelope is linear with respect to the musical
+    scale.  Both can also be used as oscillator and LFO sources.
+<br />
+<p><b>Filter</b></p>
+
+    The filter is a Chamberlin filter (2-pole 12db/octave) hacked up
+    so it doesn't destasblize at high cutoff or resonance values.  Low
+    pass, high pass, band pass, and band stop modes are available, as
+    well as four combo modes.  The filter has it's own ADSR envelope
+    (identical to amplifier envelope with the added option of
+    switching to negative polarity).  One of the LFOs may be mapped to
+    modulate filter cutoff.  Cutoff controller values map directly to
+    MIDI note numbers.  Optional keyfollow mode allows cutoff to
+    follow the key played for the MIDI note, or the lowest, highest,
+    or most recent key in play.  The filter is per-voice in Poly mode.
+<br />
+<p><b>Chorus</b></p>
+
+    The PHASEX stereo crossover chorus (inspired by the chorus on the
+    old Akai S-series samplers) adds depth and that extra bit of
+    fullness, and comes with a builtin phaser for an expansive stereo
+    soundstage.
+<br />
+<p><b>Delay</b></p>
+
+    The delay sports the normal mix and feedback controls, along with
+    a channel crossover option.  A dedicated LFO allows modulation of
+    playback position, great for flange-like effects (or really
+    messing with people's heads at longer delay times).  Delay times
+    are selectable based on tempo, in both 1/64th and 1/48th
+    increments.
+<br />
+<p><b>Input Processing</b></p>
+
+    Up to two JACK input channels (as mono, dual mono, or stereo) may
+    be used as frequency sources for both oscillators and LFOs.  An
+    input envelope follower and input boost allow for sources like
+    guitar or vocals to be processed with ease.
+<br />
+<p><b>Stereo Width</b></p>
+
+    The width of the stereo image is adjustable via a MIDI controller
+    from pure mono to pure stereo.  Can be used during sound design to
+    help create patches that sound very different when a center
+    playback channel is present.
+        </div>
+        </div>
+        </div>
+    </body>
+</html>

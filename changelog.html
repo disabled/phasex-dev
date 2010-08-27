@@ -1,0 +1,240 @@
+<html>
+    <head>
+        <title>
+            PHASEX Development Branch
+        </title
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <div id="wrap">
+        <div id="header"
+            <h1>PHASEX Development Branch</h1>
+        </div>
+        <div id="navigation">|
+            <a href="index.html">Home</a> |
+            <a href="features.html">Features</a> |
+            <a href="changelog.html"><b>Changelog</b></a> |
+            <a href="http://github.com/disabled/phasex-dev/downloads">Downloads</a> |
+            <a href="http://github.com/disabled/phasex-dev/issues">Bugtracker</a> |
+            <a href="mailto:assault64@gmail.com">Contact</a> |
+        </div>
+        <div id="mainarea">
+        <div id="description">
+        <p><b>Changelog</b></p>
+
+<p>2010-08-27 Anton Kormakov - Milestone 1</p>
+<ul>
+    <li>Added LASH support.</li>
+    <li>Added sustain pedal support.</li>
+    <li>Fixed behavior of NOTE_OFF in attack.</li>
+    <li>Fixed system GTK theme.</li>
+    <li>Added 'Panic' button.</li>
+    <li>Fixed behavior of polyphony limit.</li>
+    <li>Fixed ADSR calculation.</li>
+    <li>Fixed chorus interpolation.</li>
+    <li>'Feedback' chorus and delay setting renamed to 'Feedback Mix'.</li>
+    <li>Added DC blocking filter.</li>
+    <li>Fixed MIDI learn for BPM parameter.</li>
+    <li>Changed naming scheme of multiple instances.</li>
+    <li>Added -n (--name) option to set name of PHASEX instance.</li>
+</ul>
+2009-09-22 William Weston - 0.12.0
+<ul>
+	<li>Rebuilt configure.ac (now uses autoconf and automake properly).</li>
+	<li>Added --enable-32bit and --enable-cpu-power= options to configure.</li>
+	<li>Enabled gcc version checking for selecting optimization flags.</li>
+	<li>Updated phasex.desktop file and removed extra copy in phasex root.</li>
+	<li>Updated phasex.spec.in to work with new changes.</li>
+	<li>Added GTK engine detection and separated engine def from themes.</li>
+	<li>Adjusted themes and table layouts to allow one-page on 1024x768.</li>
+	<li>Added missing extern to variable prototypes in param.h.</li>
+	<li>Re-Added patch menu and added bank mem mode to it.</li>
+	<li>Moved MIDI channel from general section to patch box.</li>
+	<li>Moved patch->midi_channel to setting_midi_channel.</li>
+	<li>Added MIDI channel to command line options.</li>
+	<li>Fixed all GTK errors and warnings in file dialogs.</li>
+	<li>Added amp velocity control (yes, it's finally here).</li>
+	<li>Fixed smoothing algorithm for aftertouch sensitivity.</li>
+	<li>Changed default rt priorities for midi and engine to 89 and 88.</li>
+	<li>Added realtime sched policy setting (choice of SCHED_FIFO or SCHED_RR).</li>
+	<li>Fixed long-time-lurking patch name corruption bug.</li>
+	<li>Added hidden maximize setting (remember window state). </li>
+	<li>Fixed all phasex_shutdown() related segfaults.</li>
+	<li>Increased buffer periods from 1 to 2 (hardwired).</li>
+	<li>Fixed ringbuffer read in process_buffer() !!!</li>
+	<li>Added extra child logic to widget_set_custom_font().</li>
+	<li>Added extra child logic to widget_set_backing_store().</li>
+	<li>Fixed layout of controller update window and settings window.</li>
+	<li>Added support for patch names and program numbers on command line.</li>
+	<li>Included full text of GPLv2 in licensing screen.</li>
+	<li>Removed more depracated code bits.</li>
+	<li>Cleaned up comments/style/whitespace all over.</li>
+</ul>
+	
+2009-09-14 William Weston - 0.12.0-beta
+<ul>
+	<li>Fixed midimap load problem on startup.</li>
+	<li>Added parameter locking.</li>
+	<li>Updated per cpu-type compiler flags (fixes 64bit builds).</li>
+	<li>Updated rpm spec (Fedora's changes for handling desktop file).</li>
+	<li>Added memory locking to avoid page faults in rt.</li>
+	<li>Changed mutexes for rt threads to PI mutexes.</li>
+	<li>Added gtk theme support and initial phasex widget color theme.</li>
+	<li>Fixed amp envelope curve.</li>
+	<li>Reworked JACK connection code (watchdog loop instead of extra thread).</li>
+	<li>Implemented global instance number tracking (used for ALSA and JACK).</li>
+	<li>Changed ALSA client name to match JACK client name (with instance num).</li>
+	<li>Added initial support for loading sampled oscillators.</li>
+	<li>Fixed portamento calculations (nice and smooth again).</li>
+	<li>Implemented portamento for poly keymode.</li>
+	<li>Fixed problem with legato LFO retriggering in poly keymode.</li>
+	<li>Added name, class, and role window manager hints.</li>
+	<li>Added table rebuilds to handle on-the-fly tuning freq changes.</li>
+	<li>Added sampled waveforms to the wave tables.</li>
+	<li>Implemented hermite interpolation, now used in chorus.</li>
+	<li>Renamed Chorus Phase Amount to Chorus Phase Balance.</li>
+	<li>Retuned chorus delay, now based on the musical scale.</li>
+	<li>Implemented decayed average smoothing for pitch bender.</li>
+	<li>Cleaned up code and removed many deprecated code bits.</li>
+	<li>Added PHASEX_CPU_POWER macro for cpu class tunings.</li>
+	<li>Added handling of X_CFLAGS when running configure.</li>
+	<li>Updated README, INSTALL, ROADMAP, and parameter help.</li>
+	<li>Updated licensing, clarifying use of PHASEX, samples, and patches.</li>
+	<li>Fixed bug with envelope recalculation while note is in play.</li>
+	<li>Cleaned up many warnings for gcc-4.3.2.</li>
+	<li>Changed patch bank size to 1024 and created PHASEX_BANK_SIZE macro.</li>
+	<li>Removed gtk_widget_realize() calls from file select dialogs.</li>
+	<li>Set page size for all GtkAdjustment objects to zero.</li>
+	<li>Fixed file dialog hang problem (delete and re-add idle handler).</li>
+	<li>Added pan, filter lfo resonance, osc fine tune, and fm fine params.</li>
+	<li>Fixed font specification in theme gtkrc (default now "Sans 8").</li>
+	<li>Added option to ignore MIDI when mapping knobs with sequencer running.</li>
+	<li>Enabled setting of defaults for unreferenced params in patch loads.</li>
+	<li>Added graceful handling of unknown params in patch loads.</li>
+	<li>Added better folder/shortcut handling to patch file dialogs.</li>
+	<li>Added patch directory list to use all dirs in patchbank as shortcuts.</li>
+	<li>Optimized gtkknob expose events (moved math into adj handling).</li>
+	<li>Added check for pthread_mutexattr_setprotocol() for older libpthread.</li>
+	<li>Added --enable-arch=foo handling for more architectures.</li>
+	<li>Changed max polyphony from a compile-time to a run-time setting.</li>
+	<li>Fixed GtkKnob for GTK &gt;= 2.16.</li>
+	<li>Added user switchable themes and fonts.</li>
+	<li>Added true fullscreen mode.</li>
+	<li>Added velocity/aftertouch support for filter, oscs, and lfos.</li>
+	<li>Fixed JACK and ALSA MIDI thread shutdown code.</li>
+	<li>Added optimizations for Atom processors and k8 varieties w/ sse3.</li>
+	<li>Reworked handling of compile-time optimization and debug flags.</li>
+	<li>Implemented complete gtkui thread restart for GUI restarts.</li>
+	<li>Fixed Load/Save button height expansion issue.</li>
+	<li>Moved filter_q from part struct to engine stack.</li>
+	<li>Reduced knob size to 32x28 in order to save space vertically.</li>
+	</ul>
+
+2007-08-13 William Weston - 0.11.1
+<ul>
+	<li>Applied Adam Sampson's patch fixing clobbered delay size and segfault.</li>
+	<li>Added extra logic to sample rate handler to catch rate of 0 from JACK.</li>
+	<li>Cleaned up whitespace and error reporting in jack.c.</li>
+	<li>Fixed lack of resonance problem for LP+HP filter mode.</li>
+	<li>Removed unused filter_key from voice structure.</li>
+	<li>Added help documentation for preferences, command line, and filter modes.</li>
+	<li>Added new patches to default patchbank.</li>
+</ul>
+
+2007-08-07 William Weston - 0.11.0
+<ul>
+	<li>Added patch file overwrite checking.</li>
+	<li>Changed current patch to a dynamic pointer.</li>
+	<li>Separated table sizes for wavetable, env curves, and freq shifts.</li>
+	<li>Decreased sizes of lookup tables for speed.</li>
+	<li>Unified resolution for freq shifts, master tune, and filter.</li>
+	<li>Updated patchbank to reference patches by filename.</li>
+	<li>Changed combobox lists to detent knobs.</li>
+	<li>Reworked lookup table generation for better accuracy.</li>
+	<li>Modified envelope curve to prevent clicking and to sound more natural.</li>
+	<li>Implemented on-the-fly switching for layout mode and thread priorities.</li>
+	<li>Fixed bandlimiting and filter tuning by accounting for oversampling.</li>
+	<li>Removed division from filter smoothing calculations.</li>
+	<li>Reordered struct elements to be more compact with forced alignments.</li>
+	<li>Added command line argument for changing base A4 tuning frequency.</li>
+	<li>Implemented preloading of patches for patch bank.</li>
+	<li>Added ability to load multiple patches into bank with a starting offset.</li>
+	<li>Fixed bank memory mode behavior.</li>
+	<li>Moved patch load/save dialog code from gtkui.c to bank.c.</li>
+	<li>Removed JACK side blocking/waiting for audio ringbuffer.</li>
+	<li>Added --enable-arch=foo handling for all x86 cpu types in gcc-4.1.2.</li>
+	<li>Renumbered param definitions to start at 0 instead of 1.</li>
+	<li>Reworked phasex.h for easier tweaking and fine-tuning.</li>
+	<li>Removed most bits of dead code.</li>
+	<li>Cleaned up style and whitespace in most files.</li>
+	<li>Added GUI only (patchbank handling) parameters to the help system.</li>
+	<li>Fixed an unitialized next pointer problem in open_alsa_midi_in().</li>
+	<li>Changed knob middle-click centering from release to press response.</li>
+	<li>Added scroll-wheel support in gtkknob.c.</li>
+	<li>Added Pete Shorthose's patch to enable backing store for widgets.</li>
+	<li>Added event boxes behind most widgets for faster expose.</li>
+	<li>Added parameter locking capability.</li>
+	<li>Added button press and scroll-wheel handling to detent labels.</li>
+	<li>Fixed compile and layout issues for GTK versions &lt; 2.6.</li>
+	<li>Added scroll-wheel support for rate values.</li>
+	<li>Cleaned up configure.ac for smoother builds.</li>
+	<li>Added a using phasex section to the help system.</li>
+	<li>Updated documentation in help system.</li>
+	<li>Added tuning freq and backing store to settings.</li>
+	<li>Modified widget packing and spacing slightly to use less space.</li>
+	<li>Decreased max delay time from 8/1 to 1/1 to save memory.</li>
+	<li>Updated system patches to work better with filter and env tweaks.</li>
+</ul>
+
+2007-05-23 William Weston - 0.10.3
+<ul>
+	<li>Removed install of phasex.desktop from Makefile.am.</li>
+	<li>Fixed shutdown when initiated by JACK.</li>
+	<li>Re-implemented menubar using a GtkItemFactory.</li>
+	<li>Fixed menu slowness by not using GTK stock items.</li>
+	<li>Fixed file dialog slowness by prebuilding file dialogs.</li>
+	<li>Fixed race condition in threads by exiting vs. being cancelled.</li>
+</ul>
+
+2007-05-19 William Weston - 0.10.2
+<ul>
+	<li>Fixed typos and omissions in parameter help file.</li>
+	<li>Improved error handling and reporting in jack.c.</li>
+	<li>Fixed JACK thread shutdown.</li>
+	<li>Fixed improper style handling in gtkknob.c (broke in older GTK versions).</li>
+	<li>Fixed knob centering on middle click drag events.</li>
+	<li>Added Peter Shorthose's patch for saving memory with a single knob anim.</li>
+	<li>Cleaned up style and whitespace in gtkknob.c, added boilerplate.</li>
+	<li>Added current midimap file to saved settings.</li>
+	<li>Fixed build and runtime problems with GTK versions &gt;= 2.4.x and &lt; 2.8.x.</li>
+	<li>Fixed invalid setting of patch modified flag on startup.</li>
+	<li>Updated error message for unhandled ALSA MIDI errors.</li>
+	<li>Fixed passing of debug flags in configure.ac.</li>
+	<li>Fixed detection of functions in libm.</li>
+	<li>Added install of phasex.desktop to Makefile.am.</li>
+	<li>Fixed uninitiailized varibable warnings in midi.c.</li>
+	<li>Fixed missed internal update on bool params first switching to zero.</li>
+	<li>Removed dead update_widget_val() in callback.c.</li>
+	<li>Disabled engine side of audio ringbuffer locking.</li>
+	<li>Changed name of ALSA MIDI sequencer input port for readability.</li>
+	<li>Added project roadmap.</li>
+</ul>
+
+2007-05-03 William Weston - 0.10.1
+<ul>
+	<li>Fixed delay buffer size crash bug.</li>
+	<li>Rebuilt config.h from configure.ac (fixes undefined PHASEX_DIR).</li>
+	<li>Added engine thread cancellation point.</li>
+	<li>Changed order of setting up JACK callbacks</li>
+	<li>Moved main sample rate init code from samplerate callback to jack thread.</li>
+	<li>Fixed oversampling mode.</li>
+	<li>Fixed type on bank.c.</li>
+	<li>Disabled debug output in help.c.</li>
+	<li>Added --enable-debug option to configure.ac.</li>
+	<li>Fixed volume of bassy-plucked-lead and zeroed input boost on all patches.</li>
+</ul>
+        </div>
+        </div>
+        </div>
+    </body>
+</html>

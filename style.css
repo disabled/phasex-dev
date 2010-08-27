@@ -1,0 +1,24 @@
+#wrap { left: 10%; position: absolute; top: 0; width: 80%; border-left: 1px solid #999; border-right: 1px solid #999; border-bottom: 1px solid #999; background: #f1f1f1; padding-bottom: 20px; }
+
+#wrap a { text-decoration: underline; color: #333; }
+
+#header { float: center; text-align: center; padding-top: 10px; }
+#header h1 { font-size: 1.5em; }
+
+#navigation { float: center; text-align: center; padding-bottom: 5px; font-size: 11px;}
+
+#mainarea { float: center; text-align: left; padding-right: 20px; padding-left: 20px; }
+
+#quote { float: center; background: #e4e4e4; padding-top: 10px; padding-left: 10px; padding-bottom: 10px; height: 40px; }
+#quote-text { float: right; font-size: 11px; font-style: italic; line-height: 12px; text-align: left; color: #333; padding-right: 20px; }
+#quote-from { font-size: 11px; font-style: italic; line-height: 12px; float: right; text-align: left; color: #222; padding-top: 5px; padding-right: 20px; }
+
+#description { float: center; padding-top: 20px; font-size: 14px; }
+#description ul li { padding-bottom: 5px; }
+
+#last-release { font-size: 12px; line-height: 14px; width: 33%; float: right; padding: 10px; padding-top: 0px; background: #e4e4e4; margin-top: 15; }
+#last-release ul {  }
+#last-release ul li { padding-bottom: 5px; }
+
+#screenshots { float: center; }
+#screenshots a img {  }
