@@ -74,6 +74,20 @@ sample_t			wave_period		= F_WAVEFORM_SIZE / 44100.0;
 char				*jack_inputs		= NULL;
 char				*jack_outputs		= NULL;
 
+jack_position_t jack_pos;
+jack_transport_state_t  jack_state = -1;
+jack_transport_state_t  jack_prev_state = -1;
+
+int32_t         current_beat = 1;
+int32_t         prev_beat = 1;
+
+int             current_frame = 0;
+jack_nframes_t  prev_frame = 0;
+
+int             frames_per_tick;
+int             frames_per_beat;
+
+int phase_correction;
 
 /*****************************************************************************
  *
@@ -91,6 +105,7 @@ process_buffer(jack_nframes_t nframes, void *arg) {
     jack_default_audio_sample_t *out2;
     int				portion1;
     int				portion2;
+    int             j, osc, lfo;
 
     /* Get the input and output buffers for audio data */
     in1  = jack_port_get_buffer (input_port1,  nframes);
@@ -129,6 +144,147 @@ process_buffer(jack_nframes_t nframes, void *arg) {
 
     /* Update buffer full and buffer needed counters */
     buffer_full   -= nframes;
+    
+    /* jack transport sync */
+    jack_state = jack_transport_query (client, &jack_pos);
+    if(jack_state == JackTransportRolling)
+    {
+        /* reinit sync vars if transport is just started */
+        if(jack_prev_state == JackTransportStopped)
+        {
+            prev_frame = jack_pos.frame;
+            frames_per_beat = sample_rate / global.bps;
+            frames_per_tick = sample_rate / (jack_pos.ticks_per_beat * global.bps);
+            current_frame = 0;
+            current_beat = 1;
+            prev_beat = 1;
+        }
+
+        /* Handle BPM change */
+        if(jack_pos.beats_per_minute && (global.bps != jack_pos.beats_per_minute / 60.0))
+        {
+            global.bps = jack_pos.beats_per_minute / 60.0;
+            frames_per_beat = sample_rate / global.bps;
+            frames_per_tick = sample_rate / (jack_pos.ticks_per_beat * global.bps);
+
+            /* Update delay params */
+            part.delay_size   = patch->delay_time * f_sample_rate / global.bps;
+            part.delay_length = (int)(part.delay_size);
+            
+            /* Update chorus params */
+            part.chorus_lfo_freq     = global.bps * patch->chorus_lfo_rate;
+            part.chorus_lfo_adjust   = part.chorus_lfo_freq * wave_period;
+            part.chorus_phase_freq   = global.bps * patch->chorus_phase_rate;
+            part.chorus_phase_adjust = part.chorus_phase_freq * wave_period;
+            
+            /* Update oscillators */
+            for (j = 0; j < setting_polyphony; j++) {
+			    if (voice[j].active) {
+				    for (osc = 0; osc < NUM_OSCS; osc++) {
+				        if (patch->osc_freq_base[osc] >= FREQ_BASE_TEMPO) {
+					    voice[j].osc_freq[osc] = patch->osc_rate[osc] * global.bps;
+				        }
+				    }
+			    }
+			}
+			
+			/* Update LFOs */
+	        for (lfo = 0; lfo < NUM_LFOS; lfo++) {
+			    if (patch->lfo_freq_base[lfo] >= FREQ_BASE_TEMPO) {
+				    part.lfo_freq[lfo]   = patch->lfo_rate[lfo] * global.bps;
+			    }
+		    }
+	    }
+	    
+	    /* BBT sync */
+	    /*if(prev_beat != jack_pos.beat)
+	    {
+	        prev_beat = jack_pos.beat;
+	        current_beat++;
+	        phase_correction = jack_pos.tick * frames_per_tick;
+	    }*/
+	    
+	    /* Plain time sync */
+	    current_frame += (jack_pos.frame - prev_frame);
+	    prev_frame = jack_pos.frame;
+	    /* resync if clock is lost */
+	    if((current_frame >= 2*frames_per_beat) || (current_frame < 0))
+	        current_frame = 0;
+
+	    if(current_frame >= frames_per_beat)
+	    {
+	        current_beat++;
+	        current_frame = current_frame - frames_per_beat;
+	        phase_correction = current_frame;
+	    }
+	    
+	    /* phases hard sync */
+	    if(current_beat == 4)
+	    {   
+	        /*for (osc = 0; osc < NUM_OSCS; osc++) {
+				for (j = 0; j < setting_polyphony; j++) {
+				    if (patch->osc_freq_base[osc] >= FREQ_BASE_TEMPO) {
+				        //voice[j].index[osc] = part.osc_init_index[osc] + phase_correction;
+				        voice[j].index[osc] += phase_correction;
+				    }
+				}
+			}
+			for (lfo = 0; lfo < NUM_LFOS; lfo++) {
+			    if (patch->lfo_freq_base[lfo] >= FREQ_BASE_TEMPO) {
+				    //part.lfo_index[lfo] = part.lfo_init_index[lfo] + phase_correction;
+				    part.lfo_index[lfo] += phase_correction;
+				}
+			}*/
+			current_beat = 0;
+	    }
+    }
+    else if ((jack_state == JackTransportStopped) && (jack_prev_state == JackTransportRolling))
+    {
+        current_beat = 1;
+        prev_beat = 1;
+        
+        /* send NOTE_OFFs on transport stop */
+        for (j = 0; j < setting_polyphony; j++)
+        {
+            voice[j].allocated = 0;
+            voice[j].keypressed = -1;
+		    part.prev = NULL;
+		    part.cur = part.head;
+		    while ((part.cur != NULL)) {
+                /* if note is found, unlink it from the list */
+			    if (part.cur->midi_key == voice[j].midi_key) {
+	            if (part.prev != NULL) {
+				    part.prev->next = part.cur->next;
+				    part.cur->next  = NULL;
+				    part.cur        = part.prev->next;
+			    }
+			    else {
+				    part.head       = part.cur->next;
+				    part.cur->next  = NULL;
+				    part.cur        = part.head;
+			    }
+			    }
+			    /* otherwise, on to the next key in the list */
+			    else {
+		            part.prev = part.cur;
+				    part.cur  = part.cur->next;
+			    }
+	        }
+	        voice[j].midi_key   = -1;
+            voice[j].age = 0;
+            voice[j].amp_env_raw = 0.0;
+		    voice[j].cur_amp_sample = -2; 
+		    voice[j].cur_amp_interval = ENV_INTERVAL_DONE;
+		    voice[j].filter_env_raw = 0.0;
+		    voice[j].cur_filter_sample = -2; 
+		    voice[j].cur_filter_interval = ENV_INTERVAL_DONE;
+        }
+        part.midi_key = -1;
+	    part.head = NULL;
+        hold_pedal = 0;
+    }
+    
+    jack_prev_state = jack_state;
 
     /* Signal the engine that there's space again */
     if (pthread_mutex_trylock (&buffer_mutex) == 0) {
