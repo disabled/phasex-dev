@@ -778,6 +778,9 @@ midi_thread(void *arg) {
 				                       = env_table[patch->amp_attack];
 			    voice[v].cur_filter_sample = voice[v].filter_env_dur[ENV_INTERVAL_ATTACK]
 				                       = env_table[patch->filter_attack];
+				                       
+				voice[v].amp_env_raw = 0;
+				voice[v].filter_env_raw = 0;
 
                 if(patch->amp_attack || patch->amp_decay)
 			        voice[v].amp_env_delta[ENV_INTERVAL_ATTACK]    =
