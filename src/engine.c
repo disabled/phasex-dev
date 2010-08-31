@@ -1318,7 +1318,7 @@ engine_thread(void *arg) {
 }
 
 void
-engine_panic(void)
+engine_notes_off(void)
 {
     int j;
     for (j = 0; j < setting_polyphony; j++)
@@ -1356,6 +1356,18 @@ engine_panic(void)
 		voice[j].cur_filter_sample = -2; 
 		voice[j].cur_filter_interval = ENV_INTERVAL_DONE;
     }
+    part.midi_key = -1;
+	part.head = NULL;
+    hold_pedal = 0;
+}
+
+void
+engine_panic(void)
+{
+    /* kill notes */
+    engine_notes_off();
+    
+    /* clear buffers */
     memset (part.delay_buf, 0, part.delay_bufsize * 2 * sizeof (sample_t));
 	part.chorus_bufsize = CHORUS_MAX;
     #ifdef INTERPOLATE_CHORUS
@@ -1364,7 +1376,4 @@ engine_panic(void)
     #else
 	memset (part.chorus_buf, 0, part.chorus_bufsize * 2 * sizeof (sample_t));
     #endif
-	part.midi_key = -1;
-	part.head = NULL;
-    hold_pedal = 0;
 }

@@ -245,6 +245,7 @@ extern int		engine_ready;
 void init_parameters(void);
 void *engine_thread(void *arg);
 
+void engine_notes_off(void);
 void engine_panic(void);
 
 #endif /* _PHASEX_ENGINE_H_ */

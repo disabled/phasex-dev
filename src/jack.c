@@ -244,44 +244,7 @@ process_buffer(jack_nframes_t nframes, void *arg) {
         prev_beat = 1;
         
         /* send NOTE_OFFs on transport stop */
-        for (j = 0; j < setting_polyphony; j++)
-        {
-            voice[j].allocated = 0;
-            voice[j].keypressed = -1;
-		    part.prev = NULL;
-		    part.cur = part.head;
-		    while ((part.cur != NULL)) {
-                /* if note is found, unlink it from the list */
-			    if (part.cur->midi_key == voice[j].midi_key) {
-	            if (part.prev != NULL) {
-				    part.prev->next = part.cur->next;
-				    part.cur->next  = NULL;
-				    part.cur        = part.prev->next;
-			    }
-			    else {
-				    part.head       = part.cur->next;
-				    part.cur->next  = NULL;
-				    part.cur        = part.head;
-			    }
-			    }
-			    /* otherwise, on to the next key in the list */
-			    else {
-		            part.prev = part.cur;
-				    part.cur  = part.cur->next;
-			    }
-	        }
-	        voice[j].midi_key   = -1;
-            voice[j].age = 0;
-            voice[j].amp_env_raw = 0.0;
-		    voice[j].cur_amp_sample = -2; 
-		    voice[j].cur_amp_interval = ENV_INTERVAL_DONE;
-		    voice[j].filter_env_raw = 0.0;
-		    voice[j].cur_filter_sample = -2; 
-		    voice[j].cur_filter_interval = ENV_INTERVAL_DONE;
-        }
-        part.midi_key = -1;
-	    part.head = NULL;
-        hold_pedal = 0;
+        engine_notes_off();
     }
     
     jack_prev_state = jack_state;

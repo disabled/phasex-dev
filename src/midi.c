@@ -643,12 +643,22 @@ midi_thread(void *arg) {
 			/* get controller number */
 			cc = ev->data.control.param % 128;
 
+            /* Process generic MIDI events */
             /* TODO: integrate pedal into params matrix */
-            if (cc == 64)
+            switch(cc)
             {
+            case MIDI_HOLD_PEDAL:
                 hold_pedal = (ev->data.control.value > 64) ? 1 : 0;
                 if(!(hold_pedal || part.head))
                     part.midi_key = -1;
+            break;
+            case MIDI_ALL_SOUND_OFF:
+                engine_panic();
+            break;
+            case MIDI_ALL_NOTES_OFF:
+                if(!hold_pedal)
+                    engine_notes_off();
+            break;
             }
 			
 			/* now walk through the params in the matrix */

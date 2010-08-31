@@ -27,6 +27,10 @@
 #include <pthread.h>
 #include <asoundlib.h>
 
+#define MIDI_HOLD_PEDAL 64
+#define MIDI_ALL_SOUND_OFF 120
+#define MIDI_ALL_NOTES_OFF 123
+
 
 typedef struct midi_port {
     int			client;
