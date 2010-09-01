@@ -655,6 +655,18 @@ midi_thread(void *arg) {
             case MIDI_ALL_SOUND_OFF:
                 engine_panic();
             break;
+            case MIDI_RESET_ALL_CTRLS:
+                hold_pedal = 0;
+                part.pitch_bend_target = 0;
+                part.velocity_target = 0;
+			    for (v = 0; v < setting_polyphony; v++) {
+			        if (voice[v].active) {
+				        voice[v].velocity = 0;
+				        voice[v].velocity_target_linear = 0;
+				        voice[v].velocity_target_log = velocity_gain_table[patch->amp_velocity_cc][0];
+			        }
+			    }    
+            break;
             case MIDI_ALL_NOTES_OFF:
                 if(!hold_pedal)
                     engine_notes_off();
