@@ -78,9 +78,6 @@ jack_position_t jack_pos;
 jack_transport_state_t  jack_state = -1;
 jack_transport_state_t  jack_prev_state = -1;
 
-int32_t         current_beat = 1;
-int32_t         prev_beat = 1;
-
 int             current_frame = 0;
 jack_nframes_t  prev_frame = 0;
 
@@ -88,6 +85,9 @@ int             frames_per_tick;
 int             frames_per_beat;
 
 int phase_correction;
+int need_resync;
+
+sample_t tmp_1;
 
 /*****************************************************************************
  *
@@ -147,19 +147,26 @@ process_buffer(jack_nframes_t nframes, void *arg) {
     
     /* jack transport sync */
     jack_state = jack_transport_query (client, &jack_pos);
+    /* reinit sync vars if transport is just started */
+    if((jack_prev_state == JackTransportStopped) && (jack_state == JackTransportStarting))
+    {
+        if (debug)
+	    {
+	        fprintf (stderr, "Starting sync.\n");
+        }
+        need_resync = 1;
+    }
     if(jack_state == JackTransportRolling)
     {
-        /* reinit sync vars if transport is just started */
-        if(jack_prev_state == JackTransportStopped)
+        if(need_resync)
         {
-            prev_frame = jack_pos.frame;
+            prev_frame = jack_pos.frame - nframes;
             frames_per_beat = sample_rate / global.bps;
             frames_per_tick = sample_rate / (jack_pos.ticks_per_beat * global.bps);
             current_frame = 0;
-            current_beat = 1;
-            prev_beat = 1;
+            need_resync = 0;
         }
-
+    
         /* Handle BPM change */
         if(jack_pos.beats_per_minute && (global.bps != jack_pos.beats_per_minute / 60.0))
         {
@@ -196,6 +203,16 @@ process_buffer(jack_nframes_t nframes, void *arg) {
 		    }
 	    }
 	    
+	    /* frame-based sync */
+	    current_frame = (jack_pos.frame - prev_frame);
+	    prev_frame = jack_pos.frame;
+	    
+	    if(current_frame != nframes)
+	    {
+	        /* whoooaaaa, we're traveling through time! */
+	        phase_correction = current_frame - nframes;
+	    }
+	    
 	    /* BBT sync */
 	    /*if(prev_beat != jack_pos.beat)
 	    {
@@ -205,43 +222,111 @@ process_buffer(jack_nframes_t nframes, void *arg) {
 	    }*/
 	    
 	    /* Plain time sync */
-	    current_frame += (jack_pos.frame - prev_frame);
-	    prev_frame = jack_pos.frame;
+	    //current_frame += (jack_pos.frame - prev_frame);
+	    //prev_frame = jack_pos.frame; 
 	    /* resync if clock is lost */
-	    if((current_frame >= 2*frames_per_beat) || (current_frame < 0))
-	        current_frame = 0;
+	    //if((current_frame >= 2*frames_per_beat) || (current_frame < 0))
+	    //    current_frame = 0;
 
-	    if(current_frame >= frames_per_beat)
-	    {
-	        current_beat++;
-	        current_frame = current_frame - frames_per_beat;
-	        phase_correction = current_frame;
-	    }
+	    //if(current_frame >= frames_per_beat)
+	    //{
+	    //    current_beat++;
+	    //    current_frame = current_frame - frames_per_beat;
+	    //    phase_correction = current_frame;
+	    //} 
 	    
-	    /* phases hard sync */
-	    if(current_beat == 4)
-	    {   
-	        /*for (osc = 0; osc < NUM_OSCS; osc++) {
+	    /* do the actual sync */
+	    if(phase_correction)
+	    {
+	        if (debug)
+	        {
+	            fprintf (stderr, "Out of sync. Phase correction:  %d\n", phase_correction);
+            }
+            
+	        part.delay_write_index += phase_correction;
+	        while(part.delay_write_index < 0.0)
+		        part.delay_write_index += part.delay_bufsize;
+	        while(part.delay_write_index >= part.delay_bufsize)
+		        part.delay_write_index -= part.delay_bufsize;
+	    
+	        part.chorus_lfo_index_a += phase_correction * part.chorus_lfo_adjust;
+	        while(part.chorus_lfo_index_a < 0.0)
+		        part.chorus_lfo_index_a += F_WAVEFORM_SIZE;
+	        while(part.chorus_lfo_index_a >= F_WAVEFORM_SIZE)
+		        part.chorus_lfo_index_a -= F_WAVEFORM_SIZE;
+
+		    part.chorus_lfo_index_b = part.chorus_lfo_index_a + (F_WAVEFORM_SIZE * 0.25);
+	        while(part.chorus_lfo_index_b < 0.0)
+		        part.chorus_lfo_index_b += F_WAVEFORM_SIZE;
+	        while(part.chorus_lfo_index_b >= F_WAVEFORM_SIZE)
+		        part.chorus_lfo_index_b -= F_WAVEFORM_SIZE;
+
+		    part.chorus_lfo_index_c = part.chorus_lfo_index_a + (F_WAVEFORM_SIZE * 0.5);
+	        while(part.chorus_lfo_index_c < 0.0)
+		        part.chorus_lfo_index_c += F_WAVEFORM_SIZE;
+	        while(part.chorus_lfo_index_c >= F_WAVEFORM_SIZE)
+		        part.chorus_lfo_index_c -= F_WAVEFORM_SIZE;
+
+		    part.chorus_lfo_index_d = part.chorus_lfo_index_a + (F_WAVEFORM_SIZE * 0.75);
+	        while(part.chorus_lfo_index_d < 0.0)
+		        part.chorus_lfo_index_d += F_WAVEFORM_SIZE;
+	        while(part.chorus_lfo_index_d >= F_WAVEFORM_SIZE)
+		        part.chorus_lfo_index_d -= F_WAVEFORM_SIZE;
+	    
+	        for (osc = 0; osc < NUM_OSCS; osc++) {
 				for (j = 0; j < setting_polyphony; j++) {
-				    if (patch->osc_freq_base[osc] >= FREQ_BASE_TEMPO) {
-				        //voice[j].index[osc] = part.osc_init_index[osc] + phase_correction;
-				        voice[j].index[osc] += phase_correction;
+				    if (patch->osc_freq_base[osc] >= FREQ_BASE_TEMPO) 
+				    {
+				        switch (patch->freq_mod_type[osc]) {
+		                case MOD_TYPE_LFO:
+			            tmp_1 = part.lfo_out[patch->freq_lfo[osc]];
+			            break;
+		                case MOD_TYPE_OSC:
+			            tmp_1 = ( voice[j].osc_out1[part.osc_freq_mod[osc]] + voice[j].osc_out2[part.osc_freq_mod[osc]] ) * 0.5;
+			            break;
+		                case MOD_TYPE_VELOCITY:
+			            tmp_1 = voice[j].velocity_coef_linear;
+			            break;
+		                default:
+			            tmp_1 = 0.0;
+			            break;
+		                }
+		                
+				        voice[j].index[osc] += phase_correction
+				            * halfsteps_to_freq_mult ( ( tmp_1
+					        * patch->freq_lfo_amount[osc] )
+							   + part.osc_pitch_bend[osc]
+							   + patch->osc_transpose[osc] )
+			                * voice[j].osc_freq[osc] * wave_period;
+				        
+				        while (voice[j].index[osc] < 0.0)
+			                voice[j].index[osc] += F_WAVEFORM_SIZE;
+		                while (voice[j].index[osc] >= F_WAVEFORM_SIZE)
+			                voice[j].index[osc] -= F_WAVEFORM_SIZE;
 				    }
 				}
 			}
 			for (lfo = 0; lfo < NUM_LFOS; lfo++) {
-			    if (patch->lfo_freq_base[lfo] >= FREQ_BASE_TEMPO) {
-				    //part.lfo_index[lfo] = part.lfo_init_index[lfo] + phase_correction;
-				    part.lfo_index[lfo] += phase_correction;
+			    if (patch->lfo_freq_base[lfo] >= FREQ_BASE_TEMPO) 
+			    {
+				    part.lfo_index[lfo] += phase_correction
+				        * part.lfo_freq[lfo]
+		                * halfsteps_to_freq_mult (patch->lfo_transpose[lfo] + part.lfo_pitch_bend[lfo])
+		                * wave_period;
+				    
+				    while (part.lfo_index[lfo] < 0.0)
+		                part.lfo_index[lfo] += F_WAVEFORM_SIZE;
+		            while (part.lfo_index[lfo] >= F_WAVEFORM_SIZE)
+		                part.lfo_index[lfo] -= F_WAVEFORM_SIZE;
 				}
-			}*/
-			current_beat = 0;
+			}
+			phase_correction = 0;
 	    }
     }
     else if ((jack_state == JackTransportStopped) && (jack_prev_state == JackTransportRolling))
     {
-        current_beat = 1;
-        prev_beat = 1;
+        //current_beat = 1;
+        //prev_beat = 1;
         
         /* send NOTE_OFFs on transport stop */
         engine_notes_off();
