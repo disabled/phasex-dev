@@ -123,74 +123,6 @@ showusage(char *argvzero) {
     printf ("                (see AUTHORS and LICENSE for details)\n");
 }
 
-
-/*****************************************************************************
- *
- * GET_INSTANCE_NUM()
- *
- *****************************************************************************/
-/*
-int
-get_instance_num(void) {
-    char		buf[1024];
-    char		filename[PATH_MAX];
-    FILE		*cmdfile;
-    DIR			*slashproc;
-    struct dirent	*procdir;
-    int			j;
-    int			i;
-    int			instances[20];
-    char		*p;
-    char		*q;
-
-    for (j = 1; j <= 16; j++) {
-	instances[j] = 0;
-    }
-
-    if ((slashproc = opendir ("/proc")) == NULL) {
-	fprintf (stderr, "Unable to read /proc filesystem!\n");
-	exit (1);
-    }
-    while ((procdir = readdir (slashproc)) != NULL) {
-	if (procdir->d_type != DT_DIR) {
-	    continue;
-	}
-	snprintf (filename, PATH_MAX, "/proc/%s/cmdline", procdir->d_name);
-	p = q = (char *)(procdir->d_name);
-	while (isdigit (*q) && ((q - p) < 8)) {
-	    q++;
-	}
-	if (*q != '\0') {
-	    continue;
-	}
-	if ((cmdfile = fopen (filename, "rt")) == NULL) {
-	    continue;
-	}
-	if (fread (buf, sizeof (char), sizeof (buf), cmdfile) <= 0) {
-	    fclose (cmdfile);
-	    continue;
-	}
-	fclose (cmdfile);
-	if (strncmp (buf, "phasex-", 7) != 0) {
-	    continue;
-	}
-	i = (10 * (buf[7] - '0')) + (buf[8] - '0');
-	if ((i < 1) || (i > 16)) {
-	    continue;
-	}
-	instances[i] = 1;
-    }
-    closedir (slashproc);
-    for (j = 1; j <= 16; j++) {
-	if (instances[j] == 0) {
-	    return j;
-	}
-    }
-
-    return -1;
-}
-*/
-
 /*****************************************************************************
  *
  * CHECK_USER_DATA_DIRS()
@@ -298,7 +230,7 @@ phasex_shutdown(const char *msg) {
 
     /* output message from caller */
     if (msg != NULL) {
-	fprintf (stderr, msg);
+	fprintf (stderr, "%s", msg);
     }
 
     /* set the global shutdown flag */
@@ -392,12 +324,6 @@ main(int argc, char **argv) {
 
     /* lock down memory (rt hates page faults) */
     mlockall (MCL_CURRENT | MCL_FUTURE);
-
-    /* get instance number */
-    //phasex_instance = get_instance_num();
-    //if (debug) {
-	//fprintf (stderr, "PHASEX Instance: %d\n", phasex_instance);
-    //}
 
     /* make sure user data dirs are setup */
     check_user_data_dirs ();
@@ -501,30 +427,6 @@ main(int argc, char **argv) {
 	    phasex_shutdown ("Out of memory!\n");
 	}
     }
-
-    /* Figure out how much mem we have for process title. */
-    /* This includes the orig contiguous mem for argv and envp. */
-    //for (j = 0; j <= argcount; j++) {
-    //    if ((j == 0) || ((argvend + 1) == argvals[j])) {
-    //        argvend = argvals[j] + strlen (argvals[j]);
-	//}
-    //    else {
-    //        continue;
-	//}
-    //}
-
-    /* steal space from first environment entry */
-    //if (envp[0] != NULL) {
-	//argvend = envp[0] + strlen (envp[0]);
-    //}
-
-    /* calculate size we have for process title */
-    //argsize = (char *)argvend - (char *)*argvals - 1;
-    //memset (*argvals, 0, argsize);
-
-    /* rewrite process title */
-    //argc = 0;
-    //snprintf ((char *)*argvals, argsize, "phasex-%02d", phasex_instance);
 
     /* build the lookup tables */
     build_freq_table ();
