@@ -235,6 +235,10 @@ typedef float sample_t;
 # define PATH_MAX		1024
 #endif
 
+/* JACK transport sync states: off, tempo sync, tempo and phases sync */
+#define JACK_TRANSPORT_OFF      0
+#define JACK_TRANSPORT_TEMPO    1
+#define JACK_TRANSPORT_TNP      2
 
 /* globals from phasex.c */
 extern int debug;

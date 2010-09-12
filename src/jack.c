@@ -145,15 +145,19 @@ process_buffer(jack_nframes_t nframes, void *arg) {
     /* Update buffer full and buffer needed counters */
     buffer_full   -= nframes;
     
+    if(setting_jack_transport_mode)
+    {
     /* jack transport sync */
     jack_state = jack_transport_query (client, &jack_pos);
     /* reinit sync vars if transport is just started */
     if((jack_prev_state == JackTransportStopped) && (jack_state == JackTransportStarting))
     {
+        #ifdef EXTRA_DEBUG
         if (debug)
 	    {
 	        fprintf (stderr, "Starting sync.\n");
         }
+        #endif
         need_resync = 1;
     }
     if(jack_state == JackTransportRolling)
@@ -170,37 +174,8 @@ process_buffer(jack_nframes_t nframes, void *arg) {
         /* Handle BPM change */
         if(jack_pos.beats_per_minute && (global.bps != jack_pos.beats_per_minute / 60.0))
         {
-            global.bps = jack_pos.beats_per_minute / 60.0;
-            frames_per_beat = sample_rate / global.bps;
-            frames_per_tick = sample_rate / (jack_pos.ticks_per_beat * global.bps);
-
-            /* Update delay params */
-            part.delay_size   = patch->delay_time * f_sample_rate / global.bps;
-            part.delay_length = (int)(part.delay_size);
-            
-            /* Update chorus params */
-            part.chorus_lfo_freq     = global.bps * patch->chorus_lfo_rate;
-            part.chorus_lfo_adjust   = part.chorus_lfo_freq * wave_period;
-            part.chorus_phase_freq   = global.bps * patch->chorus_phase_rate;
-            part.chorus_phase_adjust = part.chorus_phase_freq * wave_period;
-            
-            /* Update oscillators */
-            for (j = 0; j < setting_polyphony; j++) {
-			    if (voice[j].active) {
-				    for (osc = 0; osc < NUM_OSCS; osc++) {
-				        if (patch->osc_freq_base[osc] >= FREQ_BASE_TEMPO) {
-					    voice[j].osc_freq[osc] = patch->osc_rate[osc] * global.bps;
-				        }
-				    }
-			    }
-			}
-			
-			/* Update LFOs */
-	        for (lfo = 0; lfo < NUM_LFOS; lfo++) {
-			    if (patch->lfo_freq_base[lfo] >= FREQ_BASE_TEMPO) {
-				    part.lfo_freq[lfo]   = patch->lfo_rate[lfo] * global.bps;
-			    }
-		    }
+            param[0].cc_val[program_number] = jack_pos.beats_per_minute - 64;
+		    param[0].callback (main_window, (gpointer)(&(param[0])));
 	    }
 	    
 	    /* frame-based sync */
@@ -213,35 +188,15 @@ process_buffer(jack_nframes_t nframes, void *arg) {
 	        phase_correction = current_frame - nframes;
 	    }
 	    
-	    /* BBT sync */
-	    /*if(prev_beat != jack_pos.beat)
-	    {
-	        prev_beat = jack_pos.beat;
-	        current_beat++;
-	        phase_correction = jack_pos.tick * frames_per_tick;
-	    }*/
-	    
-	    /* Plain time sync */
-	    //current_frame += (jack_pos.frame - prev_frame);
-	    //prev_frame = jack_pos.frame; 
-	    /* resync if clock is lost */
-	    //if((current_frame >= 2*frames_per_beat) || (current_frame < 0))
-	    //    current_frame = 0;
-
-	    //if(current_frame >= frames_per_beat)
-	    //{
-	    //    current_beat++;
-	    //    current_frame = current_frame - frames_per_beat;
-	    //    phase_correction = current_frame;
-	    //} 
-	    
 	    /* do the actual sync */
-	    if(phase_correction)
+	    if(phase_correction && (setting_jack_transport_mode == JACK_TRANSPORT_TNP))
 	    {
+	        #ifdef EXTRA_DEBUG
 	        if (debug)
 	        {
 	            fprintf (stderr, "Out of sync. Phase correction:  %d\n", phase_correction);
             }
+            #endif
             
 	        part.delay_write_index += phase_correction;
 	        while(part.delay_write_index < 0.0)
@@ -324,15 +279,13 @@ process_buffer(jack_nframes_t nframes, void *arg) {
 	    }
     }
     else if ((jack_state == JackTransportStopped) && (jack_prev_state == JackTransportRolling))
-    {
-        //current_beat = 1;
-        //prev_beat = 1;
-        
+    {        
         /* send NOTE_OFFs on transport stop */
         engine_notes_off();
     }
     
     jack_prev_state = jack_state;
+    } /* if(setting_jack_transport) */
 
     /* Signal the engine that there's space again */
     if (pthread_mutex_trylock (&buffer_mutex) == 0) {

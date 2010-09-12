@@ -5,6 +5,7 @@
  * PHASEX:  [P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
  *
  * Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+ *               2010 Anton Kormakov <assault64@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -61,6 +62,7 @@ int			setting_sched_policy		= PHASEX_SCHED_POLICY;
 int			setting_polyphony		= DEFAULT_POLYPHONY;
 int			setting_theme			= PHASEX_THEME_DARK;
 int			setting_midi_channel		= 16; // Omni
+int         setting_jack_transport_mode  = JACK_TRANSPORT_OFF;
 
 double			setting_tuning_freq		= A4FREQ;
 
@@ -99,6 +101,13 @@ char *theme_names[] = {
     "light",
     "system",
     "custom",
+    NULL
+};
+
+char *jack_transport_mode_names[] = {
+    "off",
+    "tempo",
+    "tempo_lfo",
     NULL
 };
 
@@ -189,6 +198,21 @@ read_settings(void) {
 		}
 	    }
 	}
+	
+	else if (strcasecmp (setting_name, "jack_transport_mode") == 0) {
+	    if (strcasecmp (setting_value, "off") == 0) {
+		setting_jack_transport_mode = JACK_TRANSPORT_OFF;
+	    }
+	    else if (strcasecmp (setting_value, "tempo_lfo") == 0) {
+		setting_jack_transport_mode = JACK_TRANSPORT_TNP;
+	    }
+	    else if (strcasecmp (setting_value, "tempo") == 0) {
+		setting_jack_transport_mode = JACK_TRANSPORT_TEMPO;
+	    }
+	    else {
+	    setting_jack_transport_mode = JACK_TRANSPORT_OFF;
+	    }
+	}
 
 	else if (strcasecmp (setting_name, "fullscreen") == 0) {
 	    setting_fullscreen = get_boolean (setting_value, NULL, 0);
@@ -202,7 +226,7 @@ read_settings(void) {
 	    if (strcasecmp (setting_value, "one_page")) {
 		setting_window_layout = LAYOUT_ONE_PAGE;
 	    }
-	    if (strcasecmp (setting_value, "notebook")) {
+	    else if (strcasecmp (setting_value, "notebook")) {
 		setting_window_layout = LAYOUT_NOTEBOOK;
 	    }
 	}
@@ -363,6 +387,7 @@ save_settings(void) {
     /* write the settings */
     fprintf (config_f, "# PHASEX %s Configuration\n",     PACKAGE_VERSION);
     fprintf (config_f, "midi_channel\t\t= %s;\n",	  midi_ch_labels[setting_midi_channel]);
+    fprintf (config_f, "jack_transport_mode\t\t= %s;\n",	  jack_transport_mode_names[setting_jack_transport_mode]);
     fprintf (config_f, "window_layout\t\t= %s;\n",        layout_names[setting_window_layout]);
     fprintf (config_f, "fullscreen\t\t= %s;\n",           boolean_names[setting_fullscreen]);
     fprintf (config_f, "maximize\t\t= %s;\n",		  boolean_names[setting_maximize]);
@@ -433,6 +458,30 @@ set_midi_channel(GtkWidget *widget, gpointer data, GtkWidget *widget2) {
     }
 }
 
+/*****************************************************************************
+ *
+ * SET_JACK_TRANSPORT_MODE()
+ *
+ *****************************************************************************/
+void
+set_jack_transport_mode(GtkWidget *widget, gpointer data) {
+    int		mode = (long int)data;
+
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))) {
+	switch (mode) {
+	case JACK_TRANSPORT_TEMPO:
+	    setting_jack_transport_mode = JACK_TRANSPORT_TEMPO;
+	    break;
+	case JACK_TRANSPORT_TNP:
+	    setting_jack_transport_mode = JACK_TRANSPORT_TNP;
+	    break;
+	case JACK_TRANSPORT_OFF:
+	default:
+	    setting_jack_transport_mode = JACK_TRANSPORT_OFF;
+	    break;
+	}
+    }
+}
 
 /*****************************************************************************
  *
@@ -1139,6 +1188,54 @@ create_config_dialog(void) {
 		      GTK_SIGNAL_FUNC (set_jack_autoconnect),
 		      (gpointer)1);
 
+    /* separator */
+    sep = gtk_hseparator_new ();
+    gtk_box_pack_start (GTK_BOX (vbox), sep, FALSE, FALSE, 8);
+
+    /* jack transport mode: label + 3 radiobuttons w/labels */
+    label = gtk_label_new ("JACK Transport Mode:");
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+
+    button1 = gtk_radio_button_new_with_label (NULL, "Off");
+    gtk_button_set_alignment (GTK_BUTTON (button1), 0.125, 0.5);
+    gtk_box_pack_start (GTK_BOX (vbox), button1, FALSE, FALSE, 0);
+
+    button2 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button1), "Tempo Only");
+    gtk_button_set_alignment (GTK_BUTTON (button2), 0.125, 0.5);
+    gtk_box_pack_start (GTK_BOX (vbox), button2, FALSE, FALSE, 0);
+    
+    button3 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button1), "Tempo & LFOs");
+    gtk_button_set_alignment (GTK_BUTTON (button3), 0.125, 0.5);
+    gtk_box_pack_start (GTK_BOX (vbox), button3, FALSE, FALSE, 0);
+
+    /* set active button before connecting signals */
+    switch (setting_jack_transport_mode) {
+    case JACK_TRANSPORT_TEMPO:
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button2), TRUE);
+	break;
+	case JACK_TRANSPORT_TNP:
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button3), TRUE);
+	break;
+	case JACK_TRANSPORT_OFF:
+    default:
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button1), TRUE);
+	break;
+    }
+
+    /* connect signals for jack autoconnect radiobuttons */
+    g_signal_connect (GTK_OBJECT (button1), "toggled",
+		      GTK_SIGNAL_FUNC (set_jack_transport_mode),
+		      (gpointer)0);
+
+    g_signal_connect (GTK_OBJECT (button2), "toggled",
+		      GTK_SIGNAL_FUNC (set_jack_transport_mode),
+		      (gpointer)1);
+		      
+    g_signal_connect (GTK_OBJECT (button3), "toggled",
+		      GTK_SIGNAL_FUNC (set_jack_transport_mode),
+		      (gpointer)2);
+		      
     /* separator */
     sep = gtk_hseparator_new ();
     gtk_box_pack_start (GTK_BOX (vbox), sep, FALSE, FALSE, 8);

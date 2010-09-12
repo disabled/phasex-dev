@@ -5,6 +5,7 @@
  * PHASEX:  [P]hase [H]armonic [A]dvanced [S]ynthesis [EX]periment
  *
  * Copyright (C) 1999-2009 William Weston <weston@sysex.net>
+ *               2010 Anton Kormakov <assault64@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -57,6 +58,7 @@ extern int			setting_sched_policy;
 extern int			setting_polyphony;
 extern int			setting_theme;
 extern int			setting_midi_channel;
+extern int          setting_jack_transport_mode;
 
 extern double			setting_tuning_freq;
 
@@ -75,6 +77,7 @@ extern PangoFontDescription	*phasex_font_desc;
 
 void read_settings(void);
 void save_settings(void);
+void set_jack_transport_mode(GtkWidget *widget, gpointer data);
 void set_midi_channel(GtkWidget *widget, gpointer data, GtkWidget *widget2);
 void set_fullscreen_mode(GtkWidget *widget, gpointer data1, gpointer data2);
 void set_maximize_mode(GtkWidget *widget, gpointer data1);
