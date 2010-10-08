@@ -69,6 +69,9 @@ static struct option long_opts[] = {
     {"debug",        0,       NULL, 'd'},
     {"help",         0,       NULL, 'h'},
     {"version",      0,       NULL, 'v'},
+    {"lash-project", HAS_ARG, NULL, '0'},
+    {"lash-server",  HAS_ARG, NULL, '0'},
+    {"lash-id",      HAS_ARG, NULL, '0'},
     {0, 0, 0, 0}
 };
 
@@ -346,6 +349,9 @@ main(int argc, char **argv) {
 	    break;
 
 	switch (c) {
+	case '0':
+	    //do nothing
+	    break;
 	case 'U':	/* undersample */
 	    if (setting_sample_rate_mode == SAMPLE_RATE_OVERSAMPLE) {
 		setting_sample_rate_mode = SAMPLE_RATE_NORMAL;
@@ -416,7 +422,7 @@ main(int argc, char **argv) {
 	case 'h':	/* help */
 	default:
 	    showusage (argv[0]);
-	    //return -1;
+	    return -1;
 	    break;
 	}
     }
