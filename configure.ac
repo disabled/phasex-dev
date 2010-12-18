@@ -2,7 +2,7 @@ dnl --------------------------------------------------
 dnl configure.ac for the PHASEX
 dnl --------------------------------------------------
 
-AC_INIT(PHASEX, dev-m1)
+AC_INIT(PHASEX, dev-m2)
 AM_INIT_AUTOMAKE(0.10.0)
 AC_CONFIG_FILES([Makefile src/Makefile phasex.spec])
 AM_CONFIG_HEADER(config.h)
@@ -130,13 +130,39 @@ PKG_CHECK_MODULES(SAMPLERATE,
 )
 AC_SUBST(SAMPLERATE_CFLAGS)
 
+AC_ARG_WITH(lash,
+  [AS_HELP_STRING([--without-lash],
+    [disable LASH support])],
+  [without_lash=1
+  AC_DEFINE([WITHOUT_LASH], [], [Build without LASH support])],
+  []
+)
+
 #lash
+if test x$without_lash != x1; then
 PKG_CHECK_MODULES(LASH,
   lash-1.0 >= 0.5.4,
   true,
-  AC_MSG_ERROR([need lash >= 0.5.4])
+  [AC_MSG_WARN([lash >= 0.5.4 not found. Building without LASH support.])
+  without_lash=1
+  AC_DEFINE([WITHOUT_LASH], [], [Build without LASH support])]
 )
 AC_SUBST(LASH_CFLAGS)
+fi
+
+#uuid
+if test x$without_lash != x1; then
+PKG_CHECK_MODULES(UUID,
+  uuid >= 2.16,
+  true,
+  [AC_MSG_WARN([libuuid >= 2.16 not found. Building without LASH support.])
+  without_lash=1
+  AC_DEFINE([WITHOUT_LASH], [], [Build without LASH support])]
+)
+AC_SUBST(UUID_CFLAGS)
+fi
+
+AM_CONDITIONAL(WITH_LASH, test x$without_lash != x1)
 
 # restore original vars
 CFLAGS="$ORIG_CFLAGS"
@@ -441,10 +467,10 @@ esac
 PHASEX_CFLAGS="$OPT_CFLAGS $DEBUG_CFLAGS"
 AC_SUBST(PHASEX_CFLAGS)
 
-PHASEX_CPPFLAGS="$ALSA_CFLAGS $JACK_CFLAGS $GTK_CFLAGS $SAMPLERATE_CFLAGS -D_GNU_SOURCE -D_REENTRANT -DPHASEX_CPU_POWER=$CPU_POWER_LEVEL $LASH_CFLAGS"
+PHASEX_CPPFLAGS="$ALSA_CFLAGS $JACK_CFLAGS $GTK_CFLAGS $SAMPLERATE_CFLAGS -D_GNU_SOURCE -D_REENTRANT -DPHASEX_CPU_POWER=$CPU_POWER_LEVEL $LASH_CFLAGS $UUID_CFLAGS"
 AC_SUBST(PHASEX_CPPFLAGS)
 
-PHASEX_LIBS="$ALSA_LIBS $JACK_LIBS $GTK_LIBS $SAMPLERATE_LIBS $CONF_LIBS $LASH_LIBS -lpthread"
+PHASEX_LIBS="$ALSA_LIBS $JACK_LIBS $GTK_LIBS $SAMPLERATE_LIBS $CONF_LIBS $LASH_LIBS $UUID_LIBS -lpthread -lX11"
 AC_SUBST(PHASEX_LIBS)
 
 

@@ -30,11 +30,15 @@
 #include <pthread.h>
 #include <jack/jack.h>
 #include "phasex.h"
+#include "config.h"
 #include "jack.h"
 #include "engine.h"
 #include "settings.h"
 #include "gtkui.h"
+
+#ifndef WITHOUT_LASH
 #include "lash.h"
+#endif
 
 jack_client_t			*client;
 
@@ -841,7 +845,9 @@ jack_watchdog(void) {
 	}
 
     /* poll lash for events */
+    #ifndef WITHOUT_LASH
     lash_pollevent();
+    #endif
 
 	/* everybody sleeps */
 	usleep (250000);

@@ -48,8 +48,10 @@
 #include "bank.h"
 #include "settings.h"
 #include "help.h"
-#include "lash.h"
 
+#ifndef WITHOUT_LASH
+#include "lash.h"
+#endif
 
 /* command line options */
 #define HAS_ARG		1
@@ -597,6 +599,7 @@ main(int argc, char **argv) {
     }
 
     /* init lash client */
+    #ifndef WITHOUT_LASH
     if (lash_clinit(argc, argv, client, midi->seq) == 0)
     {
     if (debug) {
@@ -605,6 +608,7 @@ main(int argc, char **argv) {
     }
     else
         fprintf (stderr, "Unable to start lash client.\n");
+    #endif
 
     /* sit here and restart jack client & poll lash client for events */
     jack_watchdog ();

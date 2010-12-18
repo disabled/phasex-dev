@@ -33,6 +33,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = phasex$(EXEEXT)
+@WITH_LASH_TRUE@am__append_1 = lash.c lash.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -45,11 +46,17 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
+am__phasex_SOURCES_DIST = phasex.c phasex.h config.h engine.c engine.h \
+	filter.c filter.h wave.c wave.h jack.c jack.h midi.c midi.h \
+	patch.c patch.h param.c param.h callback.c callback.h gtkui.c \
+	gtkui.h bank.c bank.h settings.c settings.h help.c help.h \
+	gtkknob.c gtkknob.h lash.c lash.h
+@WITH_LASH_TRUE@am__objects_1 = lash.$(OBJEXT)
 am_phasex_OBJECTS = phasex.$(OBJEXT) engine.$(OBJEXT) filter.$(OBJEXT) \
 	wave.$(OBJEXT) jack.$(OBJEXT) midi.$(OBJEXT) patch.$(OBJEXT) \
 	param.$(OBJEXT) callback.$(OBJEXT) gtkui.$(OBJEXT) \
 	bank.$(OBJEXT) settings.$(OBJEXT) help.$(OBJEXT) \
-	gtkknob.$(OBJEXT) lash.$(OBJEXT)
+	gtkknob.$(OBJEXT) $(am__objects_1)
 phasex_OBJECTS = $(am_phasex_OBJECTS)
 phasex_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -61,7 +68,7 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(phasex_SOURCES)
-DIST_SOURCES = $(phasex_SOURCES)
+DIST_SOURCES = $(am__phasex_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -100,7 +107,7 @@ LASH_CFLAGS = @LASH_CFLAGS@
 LASH_LIBS = @LASH_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@
+LIBS = $(INTLLIBS) @PHASEX_LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -122,6 +129,8 @@ SAMPLERATE_LIBS = @SAMPLERATE_LIBS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+UUID_CFLAGS = @UUID_CFLAGS@
+UUID_LIBS = @UUID_LIBS@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -169,26 +178,13 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = phasex.spec.in
-phasex_SOURCES = \
-	phasex.c phasex.h config.h \
-	engine.c engine.h \
-	filter.c filter.h \
-	wave.c wave.h \
-	jack.c jack.h \
-	midi.c midi.h \
-	patch.c patch.h \
-	param.c param.h \
-	callback.c callback.h \
-	gtkui.c gtkui.h \
-	bank.c bank.h \
-	settings.c settings.h \
-	help.c help.h \
-	gtkknob.c gtkknob.h \
-	lash.c lash.h
-
+phasex_SOURCES = phasex.c phasex.h config.h engine.c engine.h filter.c \
+	filter.h wave.c wave.h jack.c jack.h midi.c midi.h patch.c \
+	patch.h param.c param.h callback.c callback.h gtkui.c gtkui.h \
+	bank.c bank.h settings.c settings.h help.c help.h gtkknob.c \
+	gtkknob.h $(am__append_1)
 AM_CFLAGS = @PHASEX_CFLAGS@
 AM_CPPFLAGS = $(EXTRA_CPPFLAGS) @PHASEX_CPPFLAGS@
-AM_LDFLAGS = $(INTLLIBS) @PHASEX_LIBS@
 all: all-am
 
 .SUFFIXES:

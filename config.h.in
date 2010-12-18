@@ -181,6 +181,9 @@
 /* Version number of package */
 #undef VERSION
 
+/* Build without LASH support */
+#undef WITHOUT_LASH
+
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
