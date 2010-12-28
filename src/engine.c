@@ -658,10 +658,8 @@ engine_thread(void *arg) {
 		switch (patch->osc_freq_base[osc]) {
 
 		case FREQ_BASE_MIDI_KEY:
-		    /* handle portamento if necessary */
 		    if (voice[v].portamento_sample > 0) {
-			voice[v].osc_freq[osc] += voice[v].osc_portamento[osc];
-			voice[v].portamento_sample--;
+		    voice[v].osc_freq[osc] += voice[v].osc_portamento[osc];
 		    }
 		    /* otherwise set frequency directly */
 		    else {
@@ -817,6 +815,11 @@ engine_thread(void *arg) {
 		}
 
 	    }
+
+        /* handle portamento if necessary */
+		if (voice[v].portamento_sample > 0) {
+			voice[v].portamento_sample -= 4;
+		}
 
 	    /* oscs are mixed.  now apply AM oscs. */ 
 	    for (osc = 0; osc < NUM_OSCS; osc++) {

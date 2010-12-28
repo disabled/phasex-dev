@@ -943,7 +943,7 @@ midi_thread(void *arg) {
 				/* note: patch->osc_transpose[osc] is taken into account every sample in the engine */
 				if ((patch->portamento > 0)) {
 				    /* in poly, portamento always starts from previous key hit, no matter which voice */
-				    if (patch->keymode == KEYMODE_POLY) {
+				    if ((patch->keymode == KEYMODE_POLY) || (patch->keymode == KEYMODE_MONO_RETRIGGER)) {
 					if (part.prev_key == -1) {
 					    voice[v].osc_freq[osc] = freq_table[patch->master_tune_cc][256 + part.last_key + patch->transpose];
 					}
